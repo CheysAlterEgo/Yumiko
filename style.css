@@ -1,0 +1,87 @@
+/* ===== General Reset ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== Body Styling ===== */
+body {
+  font-family: 'Helvetica Neue', sans-serif;
+  background-color: #fff0f5; /* light pink */
+  color: #4a4a4a; /* soft charcoal gray for readability */
+  line-height: 1.6;
+  padding: 20px;
+}
+
+/* ===== Header Styling ===== */
+header {
+  text-align: center;
+  padding: 20px 0;
+  background-color: #ffe4e9; /* slightly deeper pink */
+  border-bottom: 2px solid #f9c5d1;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  color: #d63384; /* rosy pink */
+}
+
+header p {
+  font-style: italic;
+  color: #a85e79;
+}
+
+/* ===== Main Content ===== */
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(255, 182, 193, 0.3);
+}
+
+/* ===== Section Titles ===== */
+h2 {
+  color: #c71585; /* medium violet pink */
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ffc0cb;
+  padding-bottom: 5px;
+  font-size: 1.5rem;
+}
+
+/* ===== Paragraphs and Lists ===== */
+p {
+  margin-bottom: 15px;
+}
+
+ul {
+  list-style-type: circle;
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+/* ===== Image Styling ===== */
+img {
+  display: block;
+  margin: 20px auto;
+  border-radius: 10px;
+  max-width: 100%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Footer ===== */
+footer {
+  text-align: center;
+  padding: 15px 0;
+  margin-top: 40px;
+  background-color: #ffe4e9;
+  color: #a85e79;
+  font-size: 0.9rem;
+  border-top: 2px solid #f9c5d1;
+}
