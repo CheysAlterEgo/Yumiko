@@ -15,7 +15,6 @@
       overflow: hidden;
     }
 
-    /* ───── SIDEBAR ───── */
     #menu {
       width: 200px;
       height: 100%;
@@ -91,7 +90,6 @@
       transform: scale(0.95);
     }
 
-    /* ───── GARDEN ───── */
     #garden {
       flex-grow: 1;
       margin: 25px;
@@ -117,7 +115,6 @@
       transform: scale(0.9);
     }
 
-    /* Grow animation */
     .grow {
       animation: growUp 0.4s ease-out;
     }
@@ -127,7 +124,6 @@
       100% { transform: scaleY(1); opacity: 1; }
     }
 
-    /* ───── BACKGROUND ARROWS ───── */
     #prevArrow,
     #nextArrow {
       position: absolute;
@@ -150,15 +146,14 @@
     #nextArrow:hover {
       filter: brightness(1.1);
     }
+   
   </style>
 </head>
 
 <body>
-  <!-- Background Arrows -->
   <button id="prevArrow">←</button>
   <button id="nextArrow">→</button>
 
-  <!-- Sidebar -->
   <div id="menu" class="collapsed">
     <div id="menuHeader">Items</div>
     <div id="menuContent">
@@ -174,139 +169,155 @@
     </div>
   </div>
 
-  <!-- Garden -->
   <div id="garden"></div>
 
-  <script>
-    const flowerImages = {
-      rose: 'https://via.placeholder.com/60/FF4F8B/FFFFFF?text=🌹',
-      tulip: 'https://via.placeholder.com/60/FF9BCD/FFFFFF?text=🌷',
-      daisy: 'https://via.placeholder.com/60/FFF79B/000000?text=🌼',
-      lily: 'https://via.placeholder.com/60/FDFDFD/000000?text=🌸'
-    };
+<script>
+  const flowerImages = {
+    rose: 'https://via.placeholder.com/60/FF4F8B/FFFFFF?text=🌹',
+    tulip: 'https://via.placeholder.com/60/FF9BCD/FFFFFF?text=🌷',
+    daisy: 'https://via.placeholder.com/60/FFF79B/000000?text=🌼',
+    lily: 'https://via.placeholder.com/60/FDFDFD/000000?text=🌸'
+  };
 
   const backgrounds = [
-  'background2.jpg',
-  'background4.jpg',
-  'background3.jpg',
-  'background7.jpg',
-  'background6.jpg',
-  'background5.jpg'
-];
+    'background2.jpg',
+    'background4.jpg',
+    'background3.jpg',
+    'background7.jpg',
+    'background6.jpg',
+    'background5.jpg'
+  ];
 
+  let draggedFlowerType = null;
+  let offsetX, offsetY, bgIdx = 0;
+  const garden = document.getElementById('garden');
+  const menu = document.getElementById('menu');
+  const menuHeader = document.getElementById('menuHeader');
+  const nextArrow = document.getElementById('nextArrow');
+  const prevArrow = document.getElementById('prevArrow');
+  const flowerState = {};
 
-    let draggedFlowerType = null;
-    let offsetX, offsetY, bgIdx = 0;
+  function setBackground(index) {
+    flowerState[bgIdx] = Array.from(garden.children).map(child => ({
+      type: child.dataset.type,
+      x: parseInt(child.style.left),
+      y: parseInt(child.style.top),
+      rotation: parseInt(child.dataset.rotation || '0'),
+      size: parseFloat(child.dataset.size || 1)
+    }));
 
-    const garden = document.getElementById('garden');
-    const menu = document.getElementById('menu');
-    const menuHeader = document.getElementById('menuHeader');
-    const nextArrow = document.getElementById('nextArrow');
-    const prevArrow = document.getElementById('prevArrow');
+    garden.innerHTML = '';
+    bgIdx = index;
+    garden.style.backgroundImage = `url('${backgrounds[bgIdx]}')`;
 
-    const flowerState = {};
-
-    function setBackground(index) {
-      flowerState[bgIdx] = Array.from(garden.children).map(child => ({
-        type: child.dataset.type,
-        x: parseInt(child.style.left),
-        y: parseInt(child.style.top),
-        rotation: parseInt(child.dataset.rotation || '0')
-      }));
-
-      garden.innerHTML = '';
-      bgIdx = index;
-      garden.style.backgroundImage = `url('${backgrounds[bgIdx]}')`;
-
-      const flowers = flowerState[bgIdx] || [];
-      flowers.forEach(({ type, x, y, rotation }) => {
-        createFlower(x, y, type, rotation, false);
-      });
-    }
-
-    function createFlower(x, y, type, rotation = 0, animate = true) {
-      const img = document.createElement('img');
-      img.src = flowerImages[type];
-      img.className = 'garden-flower';
-      img.style.left = x + 'px';
-      img.style.top = y + 'px';
-      img.style.transform = `rotate(${rotation}deg)`;
-      img.dataset.type = type;
-      img.dataset.rotation = rotation;
-      img.ondblclick = () => img.remove();
-
-      if (animate) img.classList.add('grow');
-
-      enableFlowerDrag(img);
-      enableFlowerRotate(img);
-      garden.appendChild(img);
-    }
-
-    function enableFlowerDrag(flower) {
-      let dragging = false;
-      flower.addEventListener('mousedown', e => {
-        dragging = true;
-        offsetX = e.offsetX;
-        offsetY = e.offsetY;
-      });
-      document.addEventListener('mousemove', e => {
-        if (!dragging) return;
-        const rect = garden.getBoundingClientRect();
-        let newX = e.clientX - rect.left - offsetX;
-        let newY = e.clientY - rect.top - offsetY;
-        newX = Math.max(0, Math.min(newX, garden.clientWidth - flower.clientWidth));
-        newY = Math.max(0, Math.min(newY, garden.clientHeight - flower.clientHeight));
-        flower.style.left = newX + 'px';
-        flower.style.top = newY + 'px';
-      });
-      document.addEventListener('mouseup', () => dragging = false);
-    }
-
-    function enableFlowerRotate(flower) {
-      flower.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        let current = parseInt(flower.dataset.rotation || '0');
-        current += e.deltaY > 0 ? 15 : -15;
-        current %= 360;
-        flower.dataset.rotation = current;
-        flower.style.transform = `rotate(${current}deg)`;
-      });
-    }
-
-    document.querySelectorAll('.flower-option').forEach(opt => {
-      opt.addEventListener('dragstart', e => draggedFlowerType = e.target.dataset.flower);
+    const flowers = flowerState[bgIdx] || [];
+    flowers.forEach(({ type, x, y, rotation, size }) => {
+      createFlower(x, y, type, rotation, false, size);
     });
+  }
 
-    garden.addEventListener('dragover', e => e.preventDefault());
+  function createFlower(x, y, type, rotation = 0, animate = true, scale = 1) {
+    const img = document.createElement('img');
+    img.src = flowerImages[type];
+    img.className = 'garden-flower';
+    img.style.left = x + 'px';
+    img.style.top = y + 'px';
+    img.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+    img.dataset.type = type;
+    img.dataset.rotation = rotation;
+    img.dataset.size = scale;
+    img.ondblclick = () => img.remove();
 
-    garden.addEventListener('drop', e => {
-      e.preventDefault();
-      if (!draggedFlowerType) return;
-      createFlower(e.offsetX - 30, e.offsetY - 30, draggedFlowerType, 0, true);
-      draggedFlowerType = null;
+    if (animate) img.classList.add('grow');
+
+    enableFlowerDrag(img);
+    enableFlowerRotateAndResize(img);
+    garden.appendChild(img);
+  }
+
+  function enableFlowerDrag(flower) {
+    let dragging = false;
+    flower.addEventListener('mousedown', e => {
+      dragging = true;
+      offsetX = e.offsetX;
+      offsetY = e.offsetY;
     });
-
-    menuHeader.addEventListener('click', () => menu.classList.toggle('collapsed'));
-
-    nextArrow.addEventListener('click', () => {
-      const next = (bgIdx + 1) % backgrounds.length;
-      setBackground(next);
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      const rect = garden.getBoundingClientRect();
+      let newX = e.clientX - rect.left - offsetX;
+      let newY = e.clientY - rect.top - offsetY;
+      newX = Math.max(0, Math.min(newX, garden.clientWidth - flower.clientWidth));
+      newY = Math.max(0, Math.min(newY, garden.clientHeight - flower.clientHeight));
+      flower.style.left = newX + 'px';
+      flower.style.top = newY + 'px';
     });
+    document.addEventListener('mouseup', () => dragging = false);
+  }
 
-    prevArrow.addEventListener('click', () => {
-      const prev = (bgIdx - 1 + backgrounds.length) % backgrounds.length;
-      setBackground(prev);
-    });
+  function enableFlowerRotateAndResize(flower) {
+  flower.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    let rotation = parseInt(flower.dataset.rotation || '0');
+    let scale = parseFloat(flower.dataset.size || 1);
 
-    // Dropdown behavior
-    document.getElementById('flowerDropdown').addEventListener('click', e => {
-      if (e.target.classList.contains('dropdown-header')) {
-        e.currentTarget.classList.toggle('open');
+    // Normalize deltaY across devices
+    const delta = Math.sign(e.deltaY);
+
+    if (e.shiftKey) {
+      // Only allow growing when scrolling upward (on any device)
+      if (delta < 0) {
+        scale = Math.min(5, scale + 0.1);
       }
-    });
+    } else {
+      // Rotate normally
+      rotation += delta > 0 ? 15 : -15;
+      rotation = (rotation + 360) % 360;
+    }
 
-    // Init
-    setBackground(0);
-  </script>
+    flower.dataset.rotation = rotation;
+    flower.dataset.size = scale.toFixed(2);
+    flower.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+  }, { passive: false });
+}
+
+
+  document.querySelectorAll('.flower-option').forEach(opt => {
+    opt.addEventListener('dragstart', e => draggedFlowerType = e.target.dataset.flower);
+  });
+
+  garden.addEventListener('dragover', e => e.preventDefault());
+
+  garden.addEventListener('drop', e => {
+    e.preventDefault();
+    if (!draggedFlowerType) return;
+    createFlower(e.offsetX - 30, e.offsetY - 30, draggedFlowerType);
+    draggedFlowerType = null;
+  });
+
+  menuHeader.addEventListener('click', () => menu.classList.toggle('collapsed'));
+
+  nextArrow.addEventListener('click', () => {
+    const next = (bgIdx + 1) % backgrounds.length;
+    setBackground(next);
+  });
+
+  prevArrow.addEventListener('click', () => {
+    const prev = (bgIdx - 1 + backgrounds.length) % backgrounds.length;
+    setBackground(prev);
+  });
+
+  document.getElementById('flowerDropdown').addEventListener('click', e => {
+    if (e.target.classList.contains('dropdown-header')) {
+      e.currentTarget.classList.toggle('open');
+    }
+  });
+
+  setBackground(0);
+</script>
+
+
+
+
 </body>
 </html>
