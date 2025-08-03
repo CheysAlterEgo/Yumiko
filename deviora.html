@@ -256,31 +256,36 @@
   }
 
   function enableFlowerRotateAndResize(flower) {
-  flower.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    let rotation = parseInt(flower.dataset.rotation || '0');
-    let scale = parseFloat(flower.dataset.size || 1);
+    flower.addEventListener('wheel', (e) => {
+      e.preventDefault();
 
-    // Normalize deltaY across devices
-    const delta = Math.sign(e.deltaY);
+      let rotation = parseInt(flower.dataset.rotation || '0');
+      let scale = parseFloat(flower.dataset.size || 1);
 
-    if (e.shiftKey) {
-      // Only allow growing when scrolling upward (on any device)
-      if (delta < 0) {
+      // Normalize deltaY based on deltaMode to get consistent behavior
+      // deltaMode 0 = pixel, 1 = line, 2 = page — adjust accordingly
+      let deltaY = e.deltaY;
+      if (e.deltaMode === 1) deltaY *= 15;    // approx line height in pixels
+      else if (e.deltaMode === 2) deltaY *= 100; // approx page height in pixels
+
+      // Use sign to get direction: negative is scroll up, positive scroll down
+      const scrollDirection = Math.sign(deltaY);
+
+      if (e.shiftKey) {
+        // Always increase scale regardless of scroll direction
+        // So any scroll with Shift grows the flower (even scroll down)
         scale = Math.min(5, scale + 0.1);
+      } else {
+        // Rotate normally: scroll down = +15deg, scroll up = -15deg
+        rotation += scrollDirection > 0 ? 15 : -15;
+        rotation = (rotation + 360) % 360;
       }
-    } else {
-      // Rotate normally
-      rotation += delta > 0 ? 15 : -15;
-      rotation = (rotation + 360) % 360;
-    }
 
-    flower.dataset.rotation = rotation;
-    flower.dataset.size = scale.toFixed(2);
-    flower.style.transform = `rotate(${rotation}deg) scale(${scale})`;
-  }, { passive: false });
-}
-
+      flower.dataset.rotation = rotation;
+      flower.dataset.size = scale.toFixed(2);
+      flower.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+    }, { passive: false });
+  }
 
   document.querySelectorAll('.flower-option').forEach(opt => {
     opt.addEventListener('dragstart', e => draggedFlowerType = e.target.dataset.flower);
@@ -315,9 +320,5 @@
 
   setBackground(0);
 </script>
-
-
-
-
 </body>
 </html>
