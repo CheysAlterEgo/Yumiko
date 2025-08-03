@@ -23,6 +23,8 @@
       position: relative;
       transition: transform 0.35s ease;
       z-index: 10;
+      display: flex;
+      flex-direction: column;
     }
 
     #menu.collapsed {
@@ -47,45 +49,75 @@
       border-radius: 8px 8px 0 0;
       cursor: pointer;
       box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
+      z-index: 20;
     }
 
     #menuContent {
       padding: 25px 15px 15px;
+      overflow-y: auto;
+      flex-grow: 1;
     }
 
-    .dropdown {
-      background: #fff;
+    /* Toggle buttons for categories */
+    .category-toggle {
+      user-select: none;
+      background: #b37dff;
+      color: white;
+      font-weight: 700;
+      padding: 10px 12px;
+      margin-bottom: 8px;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,.15);
-      overflow: hidden;
-      margin-bottom: 15px;
-    }
-
-    .dropdown-header {
-      padding: 10px;
-      background: #d6b3ff;
-      color: #333;
-      font-weight: bold;
       cursor: pointer;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      transition: background 0.3s;
+    }
+    .category-toggle:hover {
+      background: #9a5fe0;
+    }
+    .category-toggle.active {
+      background: #7a44cc;
     }
 
-    .dropdown-content {
+    /* Flower lists inside categories */
+    .flower-list {
+      max-height: 250px; /* max height so it can scroll */
+      overflow-y: auto;
+      margin-bottom: 20px;
       display: none;
-      flex-direction: column;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-
-    .dropdown.open .dropdown-content {
+    .flower-list.active {
       display: flex;
     }
 
+    /* Single flower items */
     .flower-option {
       cursor: grab;
-      padding: 10px;
-      text-align: center;
+      padding: 5px;
       background: #fff;
-      border-top: 1px solid #eee;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      user-select: none;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      font-size: 12px;
+      text-align: center;
     }
-
+    .flower-option img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      pointer-events: none;
+      border-radius: 6px;
+      background: #fff;
+      margin-bottom: 4px;
+    }
     .flower-option:active {
       transform: scale(0.95);
     }
@@ -146,7 +178,6 @@
     #nextArrow:hover {
       filter: brightness(1.1);
     }
-   
   </style>
 </head>
 
@@ -157,174 +188,226 @@
   <div id="menu" class="collapsed">
     <div id="menuHeader">Items</div>
     <div id="menuContent">
-      <div class="dropdown" id="flowerDropdown">
-        <div class="dropdown-header">Flowers</div>
-        <div class="dropdown-content">
-          <div class="flower-option" draggable="true" data-flower="rose">Rose</div>
-          <div class="flower-option" draggable="true" data-flower="tulip">Tulip</div>
-          <div class="flower-option" draggable="true" data-flower="daisy">Daisy</div>
-          <div class="flower-option" draggable="true" data-flower="lily">Lily of the Valley</div>
-           <div class="flower-option" draggable="true" data-flower="lavender">Lavender</div>
-           <div class="flower-option" draggable="true" data-flower="dandelion">Dandelion</div>
-           <div class="flower-option" draggable="true" data-flower="waterlily">Water Lily</div>
+      <!-- Category toggles -->
+      <div id="singleToggle" class="category-toggle">Single Flowers</div>
+      <div id="clusterToggle" class="category-toggle">Cluster Flowers</div>
+
+      <!-- Single flowers list -->
+      <div id="singleFlowersList" class="flower-list">
+        <div class="flower-option" draggable="true" data-flower="rose" title="Rose">
+          <img src="rose.png" alt="Rose" />
+        </div>
+        <div class="flower-option" draggable="true" data-flower="tulip" title="Tulip">
+          <img src="tulip.png" alt="Tulip" />
+        </div>
+        <div class="flower-option" draggable="true" data-flower="daisy" title="Daisy">
+          <img src="daisy.png" alt="Daisy" />
+        </div>
+        <div class="flower-option" draggable="true" data-flower="lily" title="Lily of the Valley">
+          <img src="lilyofthevalley.png" alt="Lily of the Valley" />
+        </div>
+        <div class="flower-option" draggable="true" data-flower="lavender" title="Lavender">
+          <img src="lavender.png" alt="Lavender" />
+        </div>
+        <div class="flower-option" draggable="true" data-flower="dandelion" title="Dandelion">
+          <img src="dandelion.png" alt="Dandelion" />
+        </div>
+        <div class="flower-option" draggable="true" data-flower="waterlily" title="Water Lily">
+          <img src="waterlily.png" alt="Water Lily" />
+        </div>
+      </div>
+
+      <!-- Cluster flowers list -->
+      <div id="clusterFlowersList" class="flower-list">
+        <div class="flower-option" draggable="true" data-flower="cluster1" title="Cluster 1">
+          <img src="cluster1.png" alt="Cluster 1" />
+        </div>
+        <div class="flower-option" draggable="true" data-flower="cluster2" title="Cluster 2">
+          <img src="cluster2.png" alt="Cluster 2" />
+        </div>
+        <div class="flower-option" draggable="true" data-flower="cluster3" title="Cluster 3">
+          <img src="cluster3.png" alt="Cluster 3" />
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Garden must be outside the menu -->
   <div id="garden"></div>
 
-<script>
-  const flowerImages = {
-    rose: 'rose.png',
-    tulip: 'tulip.png',
-    daisy: 'daisy.png',
-    lily: 'lilyofthevalley.png',
-    lavender: 'lavender.png',
-    dandelion: 'dandelion.png',
-    waterlily: 'waterlily.png'
-  };
+  <script>
+    const flowerImages = {
+      rose: 'rose.png',
+      tulip: 'tulip.png',
+      daisy: 'daisy.png',
+      lily: 'lilyofthevalley.png',
+      lavender: 'lavender.png',
+      dandelion: 'dandelion.png',
+      waterlily: 'waterlily.png',
+      cluster1: 'cluster1.png',
+      cluster2: 'cluster2.png',
+      cluster3: 'cluster3.png'
+    };
 
-  const backgrounds = [
-    'background2.jpg',
-    'background4.jpg',
-    'background3.jpg',
-    'background7.jpg',
-    'background6.jpg',
-    'background5.jpg'
-  ];
+    const backgrounds = [
+      'background2.jpg',
+      'background4.jpg',
+      'background3.jpg',
+      'background7.jpg',
+      'background6.jpg',
+      'background5.jpg'
+    ];
 
-  let draggedFlowerType = null;
-  let offsetX, offsetY, bgIdx = 0;
-  const garden = document.getElementById('garden');
-  const menu = document.getElementById('menu');
-  const menuHeader = document.getElementById('menuHeader');
-  const nextArrow = document.getElementById('nextArrow');
-  const prevArrow = document.getElementById('prevArrow');
-  const flowerState = {};
+    let draggedFlowerType = null;
+    let offsetX, offsetY, bgIdx = 0;
+    const garden = document.getElementById('garden');
+    const menu = document.getElementById('menu');
+    const menuHeader = document.getElementById('menuHeader');
+    const nextArrow = document.getElementById('nextArrow');
+    const prevArrow = document.getElementById('prevArrow');
+    const flowerState = {};
 
-  function setBackground(index) {
-    flowerState[bgIdx] = Array.from(garden.children).map(child => ({
-      type: child.dataset.type,
-      x: parseInt(child.style.left),
-      y: parseInt(child.style.top),
-      rotation: parseInt(child.dataset.rotation || '0'),
-      size: parseFloat(child.dataset.size || 1)
-    }));
+    // Toggles and lists
+    const singleToggle = document.getElementById('singleToggle');
+    const clusterToggle = document.getElementById('clusterToggle');
+    const singleFlowersList = document.getElementById('singleFlowersList');
+    const clusterFlowersList = document.getElementById('clusterFlowersList');
 
-    garden.innerHTML = '';
-    bgIdx = index;
-    garden.style.backgroundImage = `url('${backgrounds[bgIdx]}')`;
+    // Initialize: all collapsed (lists hidden)
+    singleFlowersList.classList.remove('active');
+    clusterFlowersList.classList.remove('active');
 
-    const flowers = flowerState[bgIdx] || [];
-    flowers.forEach(({ type, x, y, rotation, size }) => {
-      createFlower(x, y, type, rotation, false, size);
-    });
-  }
-
-  function createFlower(x, y, type, rotation = 0, animate = true, scale = 1) {
-    const img = document.createElement('img');
-    img.src = flowerImages[type];
-    img.className = 'garden-flower';
-    img.style.left = x + 'px';
-    img.style.top = y + 'px';
-    img.style.transform = `rotate(${rotation}deg) scale(${scale})`;
-    img.dataset.type = type;
-    img.dataset.rotation = rotation;
-    img.dataset.size = scale;
-    img.ondblclick = () => img.remove();
-
-    if (animate) img.classList.add('grow');
-
-    enableFlowerDrag(img);
-    enableFlowerRotateAndResize(img);
-    garden.appendChild(img);
-  }
-
-  function enableFlowerDrag(flower) {
-    let dragging = false;
-    flower.addEventListener('mousedown', e => {
-      dragging = true;
-      offsetX = e.offsetX;
-      offsetY = e.offsetY;
-    });
-    document.addEventListener('mousemove', e => {
-      if (!dragging) return;
-      const rect = garden.getBoundingClientRect();
-      let newX = e.clientX - rect.left - offsetX;
-      let newY = e.clientY - rect.top - offsetY;
-      newX = Math.max(0, Math.min(newX, garden.clientWidth - flower.clientWidth));
-      newY = Math.max(0, Math.min(newY, garden.clientHeight - flower.clientHeight));
-      flower.style.left = newX + 'px';
-      flower.style.top = newY + 'px';
-    });
-    document.addEventListener('mouseup', () => dragging = false);
-  }
-
-  function enableFlowerRotateAndResize(flower) {
-    flower.addEventListener('wheel', (e) => {
-      e.preventDefault();
-
-      let rotation = parseInt(flower.dataset.rotation || '0');
-      let scale = parseFloat(flower.dataset.size || 1);
-
-      // Normalize deltaY based on deltaMode to get consistent behavior
-      // deltaMode 0 = pixel, 1 = line, 2 = page — adjust accordingly
-      let deltaY = e.deltaY;
-      if (e.deltaMode === 1) deltaY *= 15;    // approx line height in pixels
-      else if (e.deltaMode === 2) deltaY *= 100; // approx page height in pixels
-
-      // Use sign to get direction: negative is scroll up, positive scroll down
-      const scrollDirection = Math.sign(deltaY);
-
-      if (e.shiftKey) {
-        // Always increase scale regardless of scroll direction
-        // So any scroll with Shift grows the flower (even scroll down)
-        scale = Math.min(5, scale + 0.1);
-      } else {
-        // Rotate normally: scroll down = +15deg, scroll up = -15deg
-        rotation += scrollDirection > 0 ? 15 : -15;
-        rotation = (rotation + 360) % 360;
-      }
-
-      flower.dataset.rotation = rotation;
-      flower.dataset.size = scale.toFixed(2);
-      flower.style.transform = `rotate(${rotation}deg) scale(${scale})`;
-    }, { passive: false });
-  }
-
-  document.querySelectorAll('.flower-option').forEach(opt => {
-    opt.addEventListener('dragstart', e => draggedFlowerType = e.target.dataset.flower);
-  });
-
-  garden.addEventListener('dragover', e => e.preventDefault());
-
-  garden.addEventListener('drop', e => {
-    e.preventDefault();
-    if (!draggedFlowerType) return;
-    createFlower(e.offsetX - 30, e.offsetY - 30, draggedFlowerType);
-    draggedFlowerType = null;
-  });
-
-  menuHeader.addEventListener('click', () => menu.classList.toggle('collapsed'));
-
-  nextArrow.addEventListener('click', () => {
-    const next = (bgIdx + 1) % backgrounds.length;
-    setBackground(next);
-  });
-
-  prevArrow.addEventListener('click', () => {
-    const prev = (bgIdx - 1 + backgrounds.length) % backgrounds.length;
-    setBackground(prev);
-  });
-
-  document.getElementById('flowerDropdown').addEventListener('click', e => {
-    if (e.target.classList.contains('dropdown-header')) {
-      e.currentTarget.classList.toggle('open');
+    function collapseAll() {
+      singleFlowersList.classList.remove('active');
+      clusterFlowersList.classList.remove('active');
+      singleToggle.classList.remove('active');
+      clusterToggle.classList.remove('active');
     }
-  });
 
-  setBackground(0);
-</script>
+    // Toggle handlers
+    singleToggle.addEventListener('click', () => {
+      const isActive = singleFlowersList.classList.contains('active');
+      collapseAll();
+      if (!isActive) {
+        singleFlowersList.classList.add('active');
+        singleToggle.classList.add('active');
+      }
+    });
+
+    clusterToggle.addEventListener('click', () => {
+      const isActive = clusterFlowersList.classList.contains('active');
+      collapseAll();
+      if (!isActive) {
+        clusterFlowersList.classList.add('active');
+        clusterToggle.classList.add('active');
+      }
+    });
+
+    function setBackground(index) {
+      flowerState[bgIdx] = Array.from(garden.children).map(child => ({
+        type: child.dataset.type,
+        x: parseInt(child.style.left),
+        y: parseInt(child.style.top),
+        rotation: parseInt(child.dataset.rotation || '0'),
+        size: parseFloat(child.dataset.size || 1)
+      }));
+
+      garden.innerHTML = '';
+      bgIdx = index;
+      garden.style.backgroundImage = `url('${backgrounds[bgIdx]}')`;
+
+      const flowers = flowerState[bgIdx] || [];
+      flowers.forEach(({ type, x, y, rotation, size }) => {
+        createFlower(x, y, type, rotation, false, size);
+      });
+    }
+
+    function createFlower(x, y, type, rotation = 0, animate = true, scale = 1) {
+      if (!(type in flowerImages)) {
+        console.warn(`Unknown flower type: ${type}`);
+        return;
+      }
+      const img = document.createElement('img');
+      img.src = flowerImages[type];
+      img.className = 'garden-flower';
+      img.style.left = x + 'px';
+      img.style.top = y + 'px';
+      img.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+      img.dataset.type = type;
+      img.dataset.rotation = rotation;
+      img.dataset.size = scale;
+      img.ondblclick = () => img.remove();
+
+      if (animate) img.classList.add('grow');
+
+      enableFlowerDrag(img);
+      enableFlowerRotateAndResize(img);
+      garden.appendChild(img);
+    }
+
+    function enableFlowerDrag(flower) {
+      let dragging = false;
+      flower.addEventListener('mousedown', e => {
+        dragging = true;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+      });
+      document.addEventListener('mousemove', e => {
+        if (!dragging) return;
+        const rect = garden.getBoundingClientRect();
+        let newX = e.clientX - rect.left - offsetX;
+        let newY = e.clientY - rect.top - offsetY;
+        newX = Math.max(0, Math.min(newX, garden.clientWidth - flower.clientWidth));
+        newY = Math.max(0, Math.min(newY, garden.clientHeight - flower.clientHeight));
+        flower.style.left = newX + 'px';
+        flower.style.top = newY + 'px';
+      });
+      document.addEventListener('mouseup', () => dragging = false);
+    }
+
+    function enableFlowerRotateAndResize(flower) {
+      flower.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        let rotation = parseInt(flower.dataset.rotation || '0');
+        let scale = parseFloat(flower.dataset.size || 1);
+        let deltaY = e.deltaY;
+        if (e.deltaMode === 1) deltaY *= 15;
+        else if (e.deltaMode === 2) deltaY *= 100;
+        const scrollDirection = Math.sign(deltaY);
+
+        if (e.shiftKey) {
+          scale = Math.min(5, scale + 0.1);
+        } else {
+          rotation += scrollDirection > 0 ? 15 : -15;
+          rotation = (rotation + 360) % 360;
+        }
+
+        flower.dataset.rotation = rotation;
+        flower.dataset.size = scale.toFixed(2);
+        flower.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+      }, { passive: false });
+    }
+
+    // Drag start handlers for flower options
+    document.querySelectorAll('.flower-option').forEach(opt => {
+      opt.addEventListener('dragstart', e => {
+        draggedFlowerType = e.currentTarget.dataset.flower;
+      });
+    });
+
+    garden.addEventListener('dragover', e => e.preventDefault());
+    garden.addEventListener('drop', e => {
+      e.preventDefault();
+      if (!draggedFlowerType) return;
+      createFlower(e.offsetX - 30, e.offsetY - 30, draggedFlowerType);
+      draggedFlowerType = null;
+    });
+
+    menuHeader.addEventListener('click', () => menu.classList.toggle('collapsed'));
+    nextArrow.addEventListener('click', () => setBackground((bgIdx + 1) % backgrounds.length));
+    prevArrow.addEventListener('click', () => setBackground((bgIdx - 1 + backgrounds.length) % backgrounds.length));
+
+    setBackground(0);
+  </script>
 </body>
 </html>
