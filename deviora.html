@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Deviora's Garden</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      background: #f5ebff;
+      overflow: hidden;
+    }
+
+    /* ───── SIDEBAR ───── */
+    #menu {
+      width: 200px;
+      height: 100%;
+      background: #ead3ff;
+      border-right: 3px solid #b37dff;
+      position: relative;
+      transition: transform 0.35s ease;
+      z-index: 10;
+    }
+
+    #menu.collapsed {
+      transform: translateX(-160px);
+    }
+
+    #menuHeader {
+      position: absolute;
+      top: 50%;
+      right: -40px;
+      width: 40px;
+      height: 120px;
+      margin-top: -60px;
+      background: #b37dff;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 2px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      text-align: center;
+      line-height: 38px;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
+    }
+
+    #menuContent {
+      padding: 25px 15px 15px;
+    }
+
+    .dropdown {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,.15);
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .dropdown-header {
+      padding: 10px;
+      background: #d6b3ff;
+      color: #333;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .dropdown-content {
+      display: none;
+      flex-direction: column;
+    }
+
+    .dropdown.open .dropdown-content {
+      display: flex;
+    }
+
+    .flower-option {
+      cursor: grab;
+      padding: 10px;
+      text-align: center;
+      background: #fff;
+      border-top: 1px solid #eee;
+    }
+
+    .flower-option:active {
+      transform: scale(0.95);
+    }
+
+    /* ───── GARDEN ───── */
+    #garden {
+      flex-grow: 1;
+      margin: 25px;
+      border-radius: 14px;
+      border: 3px solid #b37dff;
+      overflow: hidden;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      background-color: #c4f0c5;
+    }
+
+    .garden-flower {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      cursor: move;
+      user-select: none;
+      transition: transform 0.2s;
+    }
+
+    .garden-flower:active {
+      transform: scale(0.9);
+    }
+
+    /* Grow animation */
+    .grow {
+      animation: growUp 0.4s ease-out;
+    }
+
+    @keyframes growUp {
+      0% { transform: scaleY(0); opacity: 0; }
+      100% { transform: scaleY(1); opacity: 1; }
+    }
+
+    /* ───── BACKGROUND ARROWS ───── */
+    #prevArrow,
+    #nextArrow {
+      position: absolute;
+      top: 20px;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      background: #b37dff;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      z-index: 11;
+    }
+
+    #prevArrow { left: 240px; }
+    #nextArrow { right: 40px; }
+
+    #prevArrow:hover,
+    #nextArrow:hover {
+      filter: brightness(1.1);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Background Arrows -->
+  <button id="prevArrow">←</button>
+  <button id="nextArrow">→</button>
+
+  <!-- Sidebar -->
+  <div id="menu" class="collapsed">
+    <div id="menuHeader">Items</div>
+    <div id="menuContent">
+      <div class="dropdown" id="flowerDropdown">
+        <div class="dropdown-header">Flowers</div>
+        <div class="dropdown-content">
+          <div class="flower-option" draggable="true" data-flower="rose">Rose</div>
+          <div class="flower-option" draggable="true" data-flower="tulip">Tulip</div>
+          <div class="flower-option" draggable="true" data-flower="daisy">Daisy</div>
+          <div class="flower-option" draggable="true" data-flower="lily">Lily of the Valley</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Garden -->
+  <div id="garden"></div>
+
+  <script>
+    const flowerImages = {
+      rose: 'https://via.placeholder.com/60/FF4F8B/FFFFFF?text=🌹',
+      tulip: 'https://via.placeholder.com/60/FF9BCD/FFFFFF?text=🌷',
+      daisy: 'https://via.placeholder.com/60/FFF79B/000000?text=🌼',
+      lily: 'https://via.placeholder.com/60/FDFDFD/000000?text=🌸'
+    };
+
+  const backgrounds = [
+  'background2.jpg',
+  'background4.jpg',
+  'background3.jpg',
+  'background7.jpg',
+  'background6.jpg',
+  'background5.jpg'
+];
+
+
+    let draggedFlowerType = null;
+    let offsetX, offsetY, bgIdx = 0;
+
+    const garden = document.getElementById('garden');
+    const menu = document.getElementById('menu');
+    const menuHeader = document.getElementById('menuHeader');
+    const nextArrow = document.getElementById('nextArrow');
+    const prevArrow = document.getElementById('prevArrow');
+
+    const flowerState = {};
+
+    function setBackground(index) {
+      flowerState[bgIdx] = Array.from(garden.children).map(child => ({
+        type: child.dataset.type,
+        x: parseInt(child.style.left),
+        y: parseInt(child.style.top),
+        rotation: parseInt(child.dataset.rotation || '0')
+      }));
+
+      garden.innerHTML = '';
+      bgIdx = index;
+      garden.style.backgroundImage = `url('${backgrounds[bgIdx]}')`;
+
+      const flowers = flowerState[bgIdx] || [];
+      flowers.forEach(({ type, x, y, rotation }) => {
+        createFlower(x, y, type, rotation, false);
+      });
+    }
+
+    function createFlower(x, y, type, rotation = 0, animate = true) {
+      const img = document.createElement('img');
+      img.src = flowerImages[type];
+      img.className = 'garden-flower';
+      img.style.left = x + 'px';
+      img.style.top = y + 'px';
+      img.style.transform = `rotate(${rotation}deg)`;
+      img.dataset.type = type;
+      img.dataset.rotation = rotation;
+      img.ondblclick = () => img.remove();
+
+      if (animate) img.classList.add('grow');
+
+      enableFlowerDrag(img);
+      enableFlowerRotate(img);
+      garden.appendChild(img);
+    }
+
+    function enableFlowerDrag(flower) {
+      let dragging = false;
+      flower.addEventListener('mousedown', e => {
+        dragging = true;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+      });
+      document.addEventListener('mousemove', e => {
+        if (!dragging) return;
+        const rect = garden.getBoundingClientRect();
+        let newX = e.clientX - rect.left - offsetX;
+        let newY = e.clientY - rect.top - offsetY;
+        newX = Math.max(0, Math.min(newX, garden.clientWidth - flower.clientWidth));
+        newY = Math.max(0, Math.min(newY, garden.clientHeight - flower.clientHeight));
+        flower.style.left = newX + 'px';
+        flower.style.top = newY + 'px';
+      });
+      document.addEventListener('mouseup', () => dragging = false);
+    }
+
+    function enableFlowerRotate(flower) {
+      flower.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        let current = parseInt(flower.dataset.rotation || '0');
+        current += e.deltaY > 0 ? 15 : -15;
+        current %= 360;
+        flower.dataset.rotation = current;
+        flower.style.transform = `rotate(${current}deg)`;
+      });
+    }
+
+    document.querySelectorAll('.flower-option').forEach(opt => {
+      opt.addEventListener('dragstart', e => draggedFlowerType = e.target.dataset.flower);
+    });
+
+    garden.addEventListener('dragover', e => e.preventDefault());
+
+    garden.addEventListener('drop', e => {
+      e.preventDefault();
+      if (!draggedFlowerType) return;
+      createFlower(e.offsetX - 30, e.offsetY - 30, draggedFlowerType, 0, true);
+      draggedFlowerType = null;
+    });
+
+    menuHeader.addEventListener('click', () => menu.classList.toggle('collapsed'));
+
+    nextArrow.addEventListener('click', () => {
+      const next = (bgIdx + 1) % backgrounds.length;
+      setBackground(next);
+    });
+
+    prevArrow.addEventListener('click', () => {
+      const prev = (bgIdx - 1 + backgrounds.length) % backgrounds.length;
+      setBackground(prev);
+    });
+
+    // Dropdown behavior
+    document.getElementById('flowerDropdown').addEventListener('click', e => {
+      if (e.target.classList.contains('dropdown-header')) {
+        e.currentTarget.classList.toggle('open');
+      }
+    });
+
+    // Init
+    setBackground(0);
+  </script>
+</body>
+</html>
