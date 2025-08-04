@@ -368,7 +368,21 @@
         </div>
       </div>
     </div>
+      <div style="margin-top: 15px;">
+  <label for="musicSelect" style="font-weight: bold; color: #5c1ea6;">🎵 Background Music</label>
+  <select id="musicSelect" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 8px; background: #fff; border: 1px solid #b37dff;">
+    <option value="">Select a track</option>
+    <option value="sound1.wav">Music 1</option>
+    <option value="sound2.wav">Music 2</option>
+    <option value="sound3.wav">Music 3</option>
+    <option value="sound4.wav">Music 4</option>
+  </select>
+          <label for="volumeSlider" style="display: block; margin-top: 10px; font-size: 12px; color: #5c1ea6;">Volume</label>
+<input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5" style="width: 100%;">
+
+</div>
   </div>
+
 
   <!-- Garden must be outside the menu -->
   <div id="garden"></div>
@@ -652,7 +666,33 @@
   prevArrow.addEventListener('click', () => setBackground((bgIdx - 1 + backgrounds.length) % backgrounds.length));
 
   setBackground(0);
+    let currentAudio = null;
+
+document.getElementById('musicSelect').addEventListener('change', function () {
+  const selectedTrack = this.value;
+document.getElementById('volumeSlider').addEventListener('input', function () {
+  if (currentAudio) {
+    currentAudio.volume = parseFloat(this.value);
+  }
+});
+
+  // Stop and remove existing audio
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+
+  if (selectedTrack) {
+    currentAudio = new Audio(selectedTrack);
+    currentAudio.loop = true;
+    currentAudio.volume = 0.5; // Default volume
+    currentAudio.play().catch(err => {
+      console.warn("Autoplay prevented:", err);
+    });
+  }
+});
+
   </script>
 </body>
 </html>
-
