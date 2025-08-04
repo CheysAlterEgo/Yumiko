@@ -268,190 +268,201 @@
   <!-- Garden must be outside the menu -->
   <div id="garden"></div>
 
-  <script>
-    const flowerImages = {
-      rose: 'rose.png',
-      tulip: 'tulip.png',
-      daisy: 'daisy.png',
-      lily: 'lilyofthevalley.png',
-      lavender: 'lavender.png',
-      dandelion: 'dandelion.png',
-      waterlily: 'waterlily.png',
-      sunflower:'sunflower.png',
-      flower1:'flower1.png',
-      flower2:'flower2.png',
-      flower3:'flower3.png',
-      flower4:'flower4.png',
-      flower5:'flower5.png',
-      flower6:'flower6.png',
-      flower7:'flower7.png',
-      cluster1: 'cluster1.png',
-      cluster2: 'cluster2.png',
-      cluster3: 'cluster3.png',
-      cluster4: 'cluster4.png',
-      cluster5: 'cluster5.png',
-      cluster6: 'cluster6.png'
-    };
+    <script>
+  const flowerImages = {
+    rose: 'rose.png',
+    tulip: 'tulip.png',
+    daisy: 'daisy.png',
+    lily: 'lilyofthevalley.png',
+    lavender: 'lavender.png',
+    dandelion: 'dandelion.png',
+    waterlily: 'waterlily.png',
+    sunflower: 'sunflower.png',
+    flower1: 'flower1.png',
+    flower2: 'flower2.png',
+    flower3: 'flower3.png',
+    flower4: 'flower4.png',
+    flower5: 'flower5.png',
+    flower6: 'flower6.png',
+    flower7: 'flower7.png',
+    cluster1: 'cluster1.png',
+    cluster2: 'cluster2.png',
+    cluster3: 'cluster3.png',
+    cluster4: 'cluster4.png',
+    cluster5: 'cluster5.png',
+    cluster6: 'cluster6.png'
+  };
 
-    const backgrounds = [
-      'background2.jpg',
-      'background4.jpg',
-      'background3.jpg',
-      'background7.jpg',
-      'background6.jpg',
-      'background5.jpg'
-    ];
+  const backgrounds = [
+    'background2.jpg',
+    'background4.jpg',
+    'background3.jpg',
+    'background7.jpg',
+    'background6.jpg',
+    'background5.jpg'
+  ];
 
-    let draggedFlowerType = null;
-    let offsetX, offsetY, bgIdx = 0;
-    const garden = document.getElementById('garden');
-    const menu = document.getElementById('menu');
-    const menuHeader = document.getElementById('menuHeader');
-    const nextArrow = document.getElementById('nextArrow');
-    const prevArrow = document.getElementById('prevArrow');
-    const flowerState = {};
+  let draggedFlowerType = null;
+  let offsetX, offsetY, bgIdx = 0;
+  const garden = document.getElementById('garden');
+  const menu = document.getElementById('menu');
+  const menuHeader = document.getElementById('menuHeader');
+  const nextArrow = document.getElementById('nextArrow');
+  const prevArrow = document.getElementById('prevArrow');
+  const flowerState = {};
 
-    // Toggles and lists
-    const singleToggle = document.getElementById('singleToggle');
-    const clusterToggle = document.getElementById('clusterToggle');
-    const singleFlowersList = document.getElementById('singleFlowersList');
-    const clusterFlowersList = document.getElementById('clusterFlowersList');
+  const singleToggle = document.getElementById('singleToggle');
+  const clusterToggle = document.getElementById('clusterToggle');
+  const singleFlowersList = document.getElementById('singleFlowersList');
+  const clusterFlowersList = document.getElementById('clusterFlowersList');
 
-    // Initialize: all collapsed (lists hidden)
+  singleFlowersList.classList.remove('active');
+  clusterFlowersList.classList.remove('active');
+
+  function collapseAll() {
     singleFlowersList.classList.remove('active');
     clusterFlowersList.classList.remove('active');
+    singleToggle.classList.remove('active');
+    clusterToggle.classList.remove('active');
+  }
 
-    function collapseAll() {
-      singleFlowersList.classList.remove('active');
-      clusterFlowersList.classList.remove('active');
-      singleToggle.classList.remove('active');
-      clusterToggle.classList.remove('active');
+  singleToggle.addEventListener('click', () => {
+    const isActive = singleFlowersList.classList.contains('active');
+    collapseAll();
+    if (!isActive) {
+      singleFlowersList.classList.add('active');
+      singleToggle.classList.add('active');
     }
+  });
 
-    // Toggle handlers
-    singleToggle.addEventListener('click', () => {
-      const isActive = singleFlowersList.classList.contains('active');
-      collapseAll();
-      if (!isActive) {
-        singleFlowersList.classList.add('active');
-        singleToggle.classList.add('active');
-      }
+  clusterToggle.addEventListener('click', () => {
+    const isActive = clusterFlowersList.classList.contains('active');
+    collapseAll();
+    if (!isActive) {
+      clusterFlowersList.classList.add('active');
+      clusterToggle.classList.add('active');
+    }
+  });
+
+  function setBackground(index) {
+    flowerState[bgIdx] = Array.from(garden.children).map(child => ({
+      type: child.dataset.type,
+      x: parseInt(child.style.left),
+      y: parseInt(child.style.top),
+      rotation: parseInt(child.dataset.rotation || '0'),
+      size: parseFloat(child.dataset.size || 1)
+    }));
+
+    garden.innerHTML = '';
+    bgIdx = index;
+    garden.style.backgroundImage = `url('${backgrounds[bgIdx]}')`;
+
+    const flowers = flowerState[bgIdx] || [];
+    flowers.forEach(({ type, x, y, rotation, size }) => {
+      createFlower(x, y, type, rotation, false, size);
+    });
+  }
+
+  function createFlower(x, y, type, rotation = 0, animate = true, scale = 1) {
+    if (!(type in flowerImages)) {
+      console.warn(`Unknown flower type: ${type}`);
+      return;
+    }
+    const img = document.createElement('img');
+    img.src = flowerImages[type];
+    img.className = 'garden-flower';
+    img.style.left = x + 'px';
+    img.style.top = y + 'px';
+    img.style.position = 'absolute';
+    img.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+    img.dataset.type = type;
+    img.dataset.rotation = rotation;
+    img.dataset.size = scale;
+    img.ondblclick = () => img.remove();
+
+    if (animate) img.classList.add('grow');
+
+    enableFlowerDrag(img);
+    enableFlowerRotateAndResize(img);
+    garden.appendChild(img);
+  }
+
+  function enableFlowerDrag(flower) {
+    let dragging = false;
+
+    flower.addEventListener('mousedown', e => {
+      dragging = true;
+      offsetX = e.offsetX;
+      offsetY = e.offsetY;
+      // Bring to front
+      flower.style.zIndex = Date.now(); 
     });
 
-    clusterToggle.addEventListener('click', () => {
-      const isActive = clusterFlowersList.classList.contains('active');
-      collapseAll();
-      if (!isActive) {
-        clusterFlowersList.classList.add('active');
-        clusterToggle.classList.add('active');
-      }
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      const rect = garden.getBoundingClientRect();
+      let newX = e.clientX - rect.left - offsetX;
+      let newY = e.clientY - rect.top - offsetY;
+      newX = Math.max(0, Math.min(newX, garden.clientWidth - flower.clientWidth));
+      newY = Math.max(0, Math.min(newY, garden.clientHeight - flower.clientHeight));
+      flower.style.left = newX + 'px';
+      flower.style.top = newY + 'px';
     });
 
-    function setBackground(index) {
-      flowerState[bgIdx] = Array.from(garden.children).map(child => ({
-        type: child.dataset.type,
-        x: parseInt(child.style.left),
-        y: parseInt(child.style.top),
-        rotation: parseInt(child.dataset.rotation || '0'),
-        size: parseFloat(child.dataset.size || 1)
-      }));
+    document.addEventListener('mouseup', () => dragging = false);
+  }
 
-      garden.innerHTML = '';
-      bgIdx = index;
-      garden.style.backgroundImage = `url('${backgrounds[bgIdx]}')`;
-
-      const flowers = flowerState[bgIdx] || [];
-      flowers.forEach(({ type, x, y, rotation, size }) => {
-        createFlower(x, y, type, rotation, false, size);
-      });
-    }
-
-    function createFlower(x, y, type, rotation = 0, animate = true, scale = 1) {
-      if (!(type in flowerImages)) {
-        console.warn(`Unknown flower type: ${type}`);
-        return;
-      }
-      const img = document.createElement('img');
-      img.src = flowerImages[type];
-      img.className = 'garden-flower';
-      img.style.left = x + 'px';
-      img.style.top = y + 'px';
-      img.style.transform = `rotate(${rotation}deg) scale(${scale})`;
-      img.dataset.type = type;
-      img.dataset.rotation = rotation;
-      img.dataset.size = scale;
-      img.ondblclick = () => img.remove();
-
-      if (animate) img.classList.add('grow');
-
-      enableFlowerDrag(img);
-      enableFlowerRotateAndResize(img);
-      garden.appendChild(img);
-    }
-
-    function enableFlowerDrag(flower) {
-      let dragging = false;
-      flower.addEventListener('mousedown', e => {
-        dragging = true;
-        offsetX = e.offsetX;
-        offsetY = e.offsetY;
-      });
-      document.addEventListener('mousemove', e => {
-        if (!dragging) return;
-        const rect = garden.getBoundingClientRect();
-        let newX = e.clientX - rect.left - offsetX;
-        let newY = e.clientY - rect.top - offsetY;
-        newX = Math.max(0, Math.min(newX, garden.clientWidth - flower.clientWidth));
-        newY = Math.max(0, Math.min(newY, garden.clientHeight - flower.clientHeight));
-        flower.style.left = newX + 'px';
-        flower.style.top = newY + 'px';
-      });
-      document.addEventListener('mouseup', () => dragging = false);
-    }
-
-    function enableFlowerRotateAndResize(flower) {
-      flower.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        let rotation = parseInt(flower.dataset.rotation || '0');
-        let scale = parseFloat(flower.dataset.size || 1);
-        let deltaY = e.deltaY;
-        if (e.deltaMode === 1) deltaY *= 15;
-        else if (e.deltaMode === 2) deltaY *= 100;
-        const scrollDirection = Math.sign(deltaY);
-
-        if (e.shiftKey) {
-          scale = Math.min(5, scale + 0.1);
-        } else {
-          rotation += scrollDirection > 0 ? 15 : -15;
-          rotation = (rotation + 360) % 360;
-        }
-
-        flower.dataset.rotation = rotation;
-        flower.dataset.size = scale.toFixed(2);
-        flower.style.transform = `rotate(${rotation}deg) scale(${scale})`;
-      }, { passive: false });
-    }
-
-    // Drag start handlers for flower options
-    document.querySelectorAll('.flower-option').forEach(opt => {
-      opt.addEventListener('dragstart', e => {
-        draggedFlowerType = e.currentTarget.dataset.flower;
-      });
-    });
-
-    garden.addEventListener('dragover', e => e.preventDefault());
-    garden.addEventListener('drop', e => {
+  function enableFlowerRotateAndResize(flower) {
+    flower.addEventListener('wheel', (e) => {
       e.preventDefault();
-      if (!draggedFlowerType) return;
-      createFlower(e.offsetX - 30, e.offsetY - 30, draggedFlowerType);
-      draggedFlowerType = null;
+      let rotation = parseInt(flower.dataset.rotation || '0');
+      let scale = parseFloat(flower.dataset.size || 1);
+      let deltaY = e.deltaY;
+      if (e.deltaMode === 1) deltaY *= 15;
+      else if (e.deltaMode === 2) deltaY *= 100;
+      const scrollDirection = Math.sign(deltaY);
+
+      if (e.shiftKey) {
+        scale = Math.min(5, scale + 0.1);
+      } else {
+        rotation += scrollDirection > 0 ? 15 : -15;
+        rotation = (rotation + 360) % 360;
+      }
+
+      flower.dataset.rotation = rotation;
+      flower.dataset.size = scale.toFixed(2);
+      flower.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+    }, { passive: false });
+  }
+
+  document.querySelectorAll('.flower-option').forEach(opt => {
+    opt.addEventListener('dragstart', e => {
+      draggedFlowerType = e.currentTarget.dataset.flower;
     });
+  });
 
-    menuHeader.addEventListener('click', () => menu.classList.toggle('collapsed'));
-    nextArrow.addEventListener('click', () => setBackground((bgIdx + 1) % backgrounds.length));
-    prevArrow.addEventListener('click', () => setBackground((bgIdx - 1 + backgrounds.length) % backgrounds.length));
+  garden.addEventListener('dragover', e => {
+    e.preventDefault();
+  });
 
-    setBackground(0);
-  </script>
+  garden.addEventListener('drop', e => {
+    e.preventDefault();
+    if (!draggedFlowerType) return;
+
+    // Calculate drop coordinates relative to garden
+    const rect = garden.getBoundingClientRect();
+    const dropX = e.clientX - rect.left;
+    const dropY = e.clientY - rect.top;
+
+    createFlower(dropX - 30, dropY - 30, draggedFlowerType);
+    draggedFlowerType = null;
+  });
+
+  menuHeader.addEventListener('click', () => menu.classList.toggle('collapsed'));
+  nextArrow.addEventListener('click', () => setBackground((bgIdx + 1) % backgrounds.length));
+  prevArrow.addEventListener('click', () => setBackground((bgIdx - 1 + backgrounds.length) % backgrounds.length));
+
+  setBackground(0);
+</script>
 </body>
 </html>
