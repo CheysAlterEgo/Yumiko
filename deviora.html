@@ -191,6 +191,9 @@
       <!-- Category toggles -->
       <div id="singleToggle" class="category-toggle">Single Flowers</div>
       <div id="clusterToggle" class="category-toggle">Cluster Flowers</div>
+      <div id="greeneryToggle" class="category-toggle">Greenery</div>
+      <div id="animalsToggle" class="category-toggle">Animals</div>
+      <div id="otherToggle" class="category-toggle">Other</div>
 
       <!-- Single flowers list -->
       <div id="singleFlowersList" class="flower-list">
@@ -215,29 +218,29 @@
         <div class="flower-option" draggable="true" data-flower="waterlily" title="Water Lily">
           <img src="waterlily.png" alt="Water Lily" />
         </div>
-        <div class="flower-option" draggable="true" data-flower="sunflower" title="sunflower">
-          <img src="sunflower.png" alt="sunflower" />
+        <div class="flower-option" draggable="true" data-flower="sunflower" title="Sunflower">
+          <img src="sunflower.png" alt="Sunflower" />
         </div>
-         <div class="flower-option" draggable="true" data-flower="flower1" title="flower">
-          <img src="flower1.png" alt="flower" />
+        <div class="flower-option" draggable="true" data-flower="flower1" title="Flower">
+          <img src="flower1.png" alt="Flower" />
         </div>
-        <div class="flower-option" draggable="true" data-flower="flower2" title="flower">
-          <img src="flower2.png" alt="flower" />
+        <div class="flower-option" draggable="true" data-flower="flower2" title="Flower">
+          <img src="flower2.png" alt="Flower" />
         </div>
-        <div class="flower-option" draggable="true" data-flower="flower3" title="flower">
-          <img src="flower3.png" alt="flower" />
+        <div class="flower-option" draggable="true" data-flower="flower3" title="Flower">
+          <img src="flower3.png" alt="Flower" />
         </div>
-        <div class="flower-option" draggable="true" data-flower="flower4" title="flower">
-          <img src="flower4.png" alt="flower" />
+        <div class="flower-option" draggable="true" data-flower="flower4" title="Flower">
+          <img src="flower4.png" alt="Flower" />
         </div>
-         <div class="flower-option" draggable="true" data-flower="flower5" title="flower">
-          <img src="flower5.png" alt="flower" />
+        <div class="flower-option" draggable="true" data-flower="flower5" title="Flower">
+          <img src="flower5.png" alt="Flower" />
         </div>
-         <div class="flower-option" draggable="true" data-flower="flower6" title="flower">
-          <img src="flower6.png" alt="flower" />
+        <div class="flower-option" draggable="true" data-flower="flower6" title="Flower">
+          <img src="flower6.png" alt="Flower" />
         </div>
-         <div class="flower-option" draggable="true" data-flower="flower7" title="flower">
-          <img src="flower7.png" alt="flower" />
+        <div class="flower-option" draggable="true" data-flower="flower7" title="Flower">
+          <img src="flower7.png" alt="Flower" />
         </div>
       </div>
 
@@ -262,13 +265,43 @@
           <img src="cluster6.png" alt="Cluster 6" />
         </div>
       </div>
+
+      <!-- Greenery list -->
+      <div id="greeneryList" class="flower-list">
+        <div class="flower-option" draggable="true" data-flower="green1" title="Bush">
+          <img src="green1.png" alt="Bush" />
+        </div>
+        <div class="flower-option" draggable="true" data-flower="green2" title="Fern">
+          <img src="green2.png" alt="Fern" />
+        </div>
+      </div>
+
+      <!-- Animals list -->
+      <div id="animalsList" class="flower-list">
+        <div class="flower-option" draggable="true" data-flower="animal1" title="Rabbit">
+          <img src="animal1.png" alt="Rabbit" />
+        </div>
+        <div class="flower-option" draggable="true" data-flower="animal2" title="Bird">
+          <img src="animal2.png" alt="Bird" />
+        </div>
+      </div>
+
+      <!-- Other list -->
+      <div id="otherList" class="flower-list">
+        <div class="flower-option" draggable="true" data-flower="rock1" title="Rock">
+          <img src="rock1.png" alt="Rock" />
+        </div>
+        <div class="flower-option" draggable="true" data-flower="fountain1" title="Fountain">
+          <img src="fountain1.png" alt="Fountain" />
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Garden must be outside the menu -->
   <div id="garden"></div>
 
-    <script>
+  <script>
   const flowerImages = {
     rose: 'rose.png',
     tulip: 'tulip.png',
@@ -290,7 +323,13 @@
     cluster3: 'cluster3.png',
     cluster4: 'cluster4.png',
     cluster5: 'cluster5.png',
-    cluster6: 'cluster6.png'
+    cluster6: 'cluster6.png',
+    green1: 'green1.png',
+    green2: 'green2.png',
+    animal1: 'animal1.png',
+    animal2: 'animal2.png',
+    rock1: 'rock1.png',
+    fountain1: 'fountain1.png'
   };
 
   const backgrounds = [
@@ -311,19 +350,38 @@
   const prevArrow = document.getElementById('prevArrow');
   const flowerState = {};
 
+  // Category toggles & lists
   const singleToggle = document.getElementById('singleToggle');
   const clusterToggle = document.getElementById('clusterToggle');
+  const greeneryToggle = document.getElementById('greeneryToggle');
+  const animalsToggle = document.getElementById('animalsToggle');
+  const otherToggle = document.getElementById('otherToggle');
+
   const singleFlowersList = document.getElementById('singleFlowersList');
   const clusterFlowersList = document.getElementById('clusterFlowersList');
+  const greeneryList = document.getElementById('greeneryList');
+  const animalsList = document.getElementById('animalsList');
+  const otherList = document.getElementById('otherList');
 
+  // Initially collapse all lists
   singleFlowersList.classList.remove('active');
   clusterFlowersList.classList.remove('active');
+  greeneryList.classList.remove('active');
+  animalsList.classList.remove('active');
+  otherList.classList.remove('active');
 
   function collapseAll() {
     singleFlowersList.classList.remove('active');
     clusterFlowersList.classList.remove('active');
+    greeneryList.classList.remove('active');
+    animalsList.classList.remove('active');
+    otherList.classList.remove('active');
+
     singleToggle.classList.remove('active');
     clusterToggle.classList.remove('active');
+    greeneryToggle.classList.remove('active');
+    animalsToggle.classList.remove('active');
+    otherToggle.classList.remove('active');
   }
 
   singleToggle.addEventListener('click', () => {
@@ -341,6 +399,33 @@
     if (!isActive) {
       clusterFlowersList.classList.add('active');
       clusterToggle.classList.add('active');
+    }
+  });
+
+  greeneryToggle.addEventListener('click', () => {
+    const isActive = greeneryList.classList.contains('active');
+    collapseAll();
+    if (!isActive) {
+      greeneryList.classList.add('active');
+      greeneryToggle.classList.add('active');
+    }
+  });
+
+  animalsToggle.addEventListener('click', () => {
+    const isActive = animalsList.classList.contains('active');
+    collapseAll();
+    if (!isActive) {
+      animalsList.classList.add('active');
+      animalsToggle.classList.add('active');
+    }
+  });
+
+  otherToggle.addEventListener('click', () => {
+    const isActive = otherList.classList.contains('active');
+    collapseAll();
+    if (!isActive) {
+      otherList.classList.add('active');
+      otherToggle.classList.add('active');
     }
   });
 
@@ -395,7 +480,7 @@
       offsetX = e.offsetX;
       offsetY = e.offsetY;
       // Bring to front
-      flower.style.zIndex = Date.now(); 
+      flower.style.zIndex = Date.now();
     });
 
     document.addEventListener('mousemove', e => {
@@ -435,6 +520,7 @@
     }, { passive: false });
   }
 
+  // Add dragstart listeners to all flower options (including new categories)
   document.querySelectorAll('.flower-option').forEach(opt => {
     opt.addEventListener('dragstart', e => {
       draggedFlowerType = e.currentTarget.dataset.flower;
@@ -463,6 +549,7 @@
   prevArrow.addEventListener('click', () => setBackground((bgIdx - 1 + backgrounds.length) % backgrounds.length));
 
   setBackground(0);
-</script>
+  </script>
 </body>
 </html>
+
