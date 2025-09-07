@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Element Spelling Trainer</title>
+  <style>
+    :root{
+      --bg:#f8fafc; /* slate-50 */
+      --panel:#ffffff;
+      --ink:#0f172a; /* slate-900 */
+      --muted:#64748b; /* slate-500 */
+      --brand:#8b5cf6; /* violet-500 */
+      --brand-2:#22c55e; /* green-500 */
+      --accent:#f472b6; /* pink-400 */
+      --warn:#ef4444; /* red-500 */
+      --ok:#10b981; /* emerald-500 */
+      --shadow: 0 10px 25px rgba(2,6,23,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--ink);
+      background:linear-gradient(180deg, #fdf2f8 0%, #eef2ff 40%, #ecfeff 100%);
+    }
+    header{
+      display:flex;align-items:center;gap:12px;justify-content:space-between;
+      padding:18px 20px;position:sticky;top:0;backdrop-filter: blur(12px);
+      background:rgba(255,255,255,.65);border-bottom:1px solid #e2e8f0;z-index:10
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.3px
+    }
+    .brand .logo{width:34px;height:34px;border-radius:12px;background:conic-gradient(from 180deg, var(--brand), var(--accent), var(--brand-2), var(--brand));box-shadow:var(--shadow)}
+    .brand span{font-size:18px}
+    .pill{
+      display:inline-flex;gap:8px;align-items:center;border:1px solid #e5e7eb;background:var(--panel);
+      padding:8px 12px;border-radius:999px;box-shadow:var(--shadow)
+    }
+    main{max-width:1100px;margin:24px auto;padding:0 16px 64px}
+
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media (min-width:900px){.grid{grid-template-columns:300px 1fr}}
+
+    .card{background:var(--panel);border-radius:20px;box-shadow:var(--shadow);padding:18px}
+    .card h2{margin:4px 0 10px;font-size:18px}
+    .muted{color:var(--muted)}
+
+    .btn{appearance:none;border:none;background:var(--ink);color:white;padding:12px 16px;border-radius:14px;cursor:pointer;font-weight:700;box-shadow:var(--shadow);transform:translateY(0);transition:.15s transform, .25s box-shadow}
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+    .btn.brand{background:linear-gradient(90deg, var(--brand), var(--accent))}
+    .btn.ghost{background:transparent;color:var(--ink);border:1px dashed #cbd5e1}
+
+    .toggle{display:flex;flex-wrap:wrap;gap:8px}
+    .toggle button{padding:8px 10px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;cursor:pointer}
+    .toggle button.active{border-color:var(--brand);box-shadow:0 0 0 3px rgba(139,92,246,.2)}
+
+    .quiz{
+      display:grid;gap:14px
+    }
+    .prompt{font-size:32px;font-weight:800;letter-spacing:.3px}
+    .prompt small{font-size:14px;font-weight:600;color:var(--muted)}
+    .inputrow{display:flex;gap:8px;align-items:center}
+    input[type=text]{width:100%;padding:14px 14px;border-radius:12px;border:1.5px solid #e5e7eb;font-size:16px;outline:none}
+    input[type=text].ok{border-color:var(--ok)}
+    input[type=text].bad{border-color:var(--warn)}
+    .hint{min-height:22px;color:var(--muted)}
+
+    .stats{display:flex;gap:14px;flex-wrap:wrap}
+    .chip{padding:8px 12px;border-radius:999px;background:#f8fafc;border:1px solid #e5e7eb;font-weight:700}
+
+    .tabs{display:flex;gap:10px;margin:8px 0 16px}
+    .tab{padding:10px 14px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;cursor:pointer;font-weight:700}
+    .tab.active{border-color:var(--brand);color:#4c1d95;box-shadow:0 0 0 3px rgba(139,92,246,.2)}
+
+    .success{color:var(--ok);font-weight:800}
+    .error{color:var(--warn);font-weight:800}
+
+    .list{max-height:360px;overflow:auto;border:1px dashed #e5e7eb;border-radius:14px;padding:8px}
+    .list .row{display:grid;grid-template-columns:50px 80px 1fr;gap:8px;padding:8px;border-radius:8px}
+    .list .row:nth-child(odd){background:#fafafa}
+
+    .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+    .confetti .p{position:absolute;width:10px;height:14px;border-radius:2px;opacity:.95}
+
+    .footer{margin-top:24px;color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <span>Element Spelling Trainer</span>
+    </div>
+    <div class="pill" id="progress-pill">
+      <span>Streak: <strong id="streak">0</strong></span>
+      <span style="width:4px"></span>
+      <span>Mastered: <strong id="mastered">0</strong></span>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section class="card">
+        <h2>Modes</h2>
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-mode="spell-name" role="tab">Spell the Name</button>
+          <button class="tab" data-mode="symbol" role="tab">Type the Symbol</button>
+          <button class="tab" data-mode="prefixes" role="tab">Covalent Prefix Practice</button>
+        </div>
+
+        <div class="toggle" id="scope">
+          <button class="active" data-scope="1-56">Up to 56 (Chem I)</button>
+          <button data-scope="1-118">All 118</button>
+          <button data-scope="custom">Custom…</button>
+        </div>
+
+        <div id="custom-range" style="display:none;margin-top:8px;gap:8px" class="inputrow">
+          <input type="text" id="range-input" placeholder="e.g., 1-20, 35, 40-56"/>
+          <button class="btn" id="apply-range">Apply</button>
+        </div>
+
+        <div class="footer">
+          Tip: Press <kbd>Enter</kbd> to submit. Press <kbd>H</kbd> for a hint. Your progress is saved automatically.
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="quiz" id="quiz">
+          <div class="prompt" id="prompt">Symbol ➜ <span id="prompt-val">H</span> <small id="prompt-sub"></small></div>
+          <div class="inputrow">
+            <input type="text" id="answer" autocomplete="off" placeholder="Type the element name…" />
+            <button class="btn brand" id="check">Check</button>
+            <button class="btn ghost" id="skip">Skip</button>
+          </div>
+          <div class="hint" id="hint"></div>
+          <div class="stats">
+            <div class="chip">Correct: <span id="correct">0</span></div>
+            <div class="chip">Wrong: <span id="wrong">0</span></div>
+            <div class="chip">Accuracy: <span id="acc">0%</span></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:16px">
+      <h2>Element List</h2>
+      <div class="list" id="elist"></div>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <h2>How the Prefix Game Works</h2>
+      <p class="muted">Practice naming simple binary covalent compounds (two nonmetals). The first element omits “mono-” when its count is 1. The second element uses prefixes and the “-ide” ending (e.g., CO is carbon monoxide; N<sub>2</sub>O<sub>5</sub> is dinitrogen pentoxide). You can type hyphens or not (both accepted).</p>
+    </section>
+
+    <div class="footer">Made for learning + spelling practice. US spellings are used (aluminum, sulfur, cesium).</div>
+  </main>
+
+  <div class="confetti" id="confetti"></div>
+
+  <audio id="ding" preload="auto">
+    <source src="data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYBHBVVVVVVVVVVVVVV" type="audio/wav">
+  </audio>
+
+  <script>
+    // ——————————— Data
+    const ELEMENTS = [
+      {z:1,s:'H',n:'Hydrogen'},{z:2,s:'He',n:'Helium'},{z:3,s:'Li',n:'Lithium'},{z:4,s:'Be',n:'Beryllium'},
+      {z:5,s:'B',n:'Boron'},{z:6,s:'C',n:'Carbon'},{z:7,s:'N',n:'Nitrogen'},{z:8,s:'O',n:'Oxygen'},
+      {z:9,s:'F',n:'Fluorine'},{z:10,s:'Ne',n:'Neon'},{z:11,s:'Na',n:'Sodium'},{z:12,s:'Mg',n:'Magnesium'},
+      {z:13,s:'Al',n:'Aluminum'},{z:14,s:'Si',n:'Silicon'},{z:15,s:'P',n:'Phosphorus'},{z:16,s:'S',n:'Sulfur'},
+      {z:17,s:'Cl',n:'Chlorine'},{z:18,s:'Ar',n:'Argon'},{z:19,s:'K',n:'Potassium'},{z:20,s:'Ca',n:'Calcium'},
+      {z:21,s:'Sc',n:'Scandium'},{z:22,s:'Ti',n:'Titanium'},{z:23,s:'V',n:'Vanadium'},{z:24,s:'Cr',n:'Chromium'},
+      {z:25,s:'Mn',n:'Manganese'},{z:26,s:'Fe',n:'Iron'},{z:27,s:'Co',n:'Cobalt'},{z:28,s:'Ni',n:'Nickel'},
+      {z:29,s:'Cu',n:'Copper'},{z:30,s:'Zn',n:'Zinc'},{z:31,s:'Ga',n:'Gallium'},{z:32,s:'Ge',n:'Germanium'},
+      {z:33,s:'As',n:'Arsenic'},{z:34,s:'Se',n:'Selenium'},{z:35,s:'Br',n:'Bromine'},{z:36,s:'Kr',n:'Krypton'},
+      {z:37,s:'Rb',n:'Rubidium'},{z:38,s:'Sr',n:'Strontium'},{z:39,s:'Y',n:'Yttrium'},{z:40,s:'Zr',n:'Zirconium'},
+      {z:41,s:'Nb',n:'Niobium'},{z:42,s:'Mo',n:'Molybdenum'},{z:43,s:'Tc',n:'Technetium'},{z:44,s:'Ru',n:'Ruthenium'},
+      {z:45,s:'Rh',n:'Rhodium'},{z:46,s:'Pd',n:'Palladium'},{z:47,s:'Ag',n:'Silver'},{z:48,s:'Cd',n:'Cadmium'},
+      {z:49,s:'In',n:'Indium'},{z:50,s:'Sn',n:'Tin'},{z:51,s:'Sb',n:'Antimony'},{z:52,s:'Te',n:'Tellurium'},
+      {z:53,s:'I',n:'Iodine'},{z:54,s:'Xe',n:'Xenon'},{z:55,s:'Cs',n:'Cesium'},{z:56,s:'Ba',n:'Barium'},
+      {z:57,s:'La',n:'Lanthanum'},{z:58,s:'Ce',n:'Cerium'},{z:59,s:'Pr',n:'Praseodymium'},{z:60,s:'Nd',n:'Neodymium'},
+      {z:61,s:'Pm',n:'Promethium'},{z:62,s:'Sm',n:'Samarium'},{z:63,s:'Eu',n:'Europium'},{z:64,s:'Gd',n:'Gadolinium'},
+      {z:65,s:'Tb',n:'Terbium'},{z:66,s:'Dy',n:'Dysprosium'},{z:67,s:'Ho',n:'Holmium'},{z:68,s:'Er',n:'Erbium'},
+      {z:69,s:'Tm',n:'Thulium'},{z:70,s:'Yb',n:'Ytterbium'},{z:71,s:'Lu',n:'Lutetium'},{z:72,s:'Hf',n:'Hafnium'},
+      {z:73,s:'Ta',n:'Tantalum'},{z:74,s:'W',n:'Tungsten'},{z:75,s:'Re',n:'Rhenium'},{z:76,s:'Os',n:'Osmium'},
+      {z:77,s:'Ir',n:'Iridium'},{z:78,s:'Pt',n:'Platinum'},{z:79,s:'Au',n:'Gold'},{z:80,s:'Hg',n:'Mercury'},
+      {z:81,s:'Tl',n:'Thallium'},{z:82,s:'Pb',n:'Lead'},{z:83,s:'Bi',n:'Bismuth'},{z:84,s:'Po',n:'Polonium'},
+      {z:85,s:'At',n:'Astatine'},{z:86,s:'Rn',n:'Radon'},{z:87,s:'Fr',n:'Francium'},{z:88,s:'Ra',n:'Radium'},
+      {z:89,s:'Ac',n:'Actinium'},{z:90,s:'Th',n:'Thorium'},{z:91,s:'Pa',n:'Protactinium'},{z:92,s:'U',n:'Uranium'},
+      {z:93,s:'Np',n:'Neptunium'},{z:94,s:'Pu',n:'Plutonium'},{z:95,s:'Am',n:'Americium'},{z:96,s:'Cm',n:'Curium'},
+      {z:97,s:'Bk',n:'Berkelium'},{z:98,s:'Cf',n:'Californium'},{z:99,s:'Es',n:'Einsteinium'},{z:100,s:'Fm',n:'Fermium'},
+      {z:101,s:'Md',n:'Mendelevium'},{z:102,s:'No',n:'Nobelium'},{z:103,s:'Lr',n:'Lawrencium'},{z:104,s:'Rf',n:'Rutherfordium'},
+      {z:105,s:'Db',n:'Dubnium'},{z:106,s:'Sg',n:'Seaborgium'},{z:107,s:'Bh',n:'Bohrium'},{z:108,s:'Hs',n:'Hassium'},
+      {z:109,s:'Mt',n:'Meitnerium'},{z:110,s:'Ds',n:'Darmstadtium'},{z:111,s:'Rg',n:'Roentgenium'},{z:112,s:'Cn',n:'Copernicium'},
+      {z:113,s:'Nh',n:'Nihonium'},{z:114,s:'Fl',n:'Flerovium'},{z:115,s:'Mc',n:'Moscovium'},{z:116,s:'Lv',n:'Livermorium'},
+      {z:117,s:'Ts',n:'Tennessine'},{z:118,s:'Og',n:'Oganesson'},
+    ];
+
+    const PREFIXES = {
+      1:'mono',2:'di',3:'tri',4:'tetra',5:'penta',6:'hexa',7:'hepta',8:'octa',9:'nona',10:'deca'
+    };
+
+    const IDE_ENDINGS = {
+      'oxygen':'oxide','fluorine':'fluoride','chlorine':'chloride','bromine':'bromide','iodine':'iodide',
+      'nitrogen':'nitride','phosphorus':'phosphide','sulfur':'sulfide','selenium':'selenide','carbon':'carbide',
+      'silicon':'silicide','boron':'boride'
+    };
+
+    const NONMETALS = ['hydrogen','carbon','nitrogen','oxygen','fluorine','phosphorus','sulfur','chlorine','selenium','bromine','iodine','silicon','boron'];
+
+    // ——————————— State
+    let mode = 'spell-name';
+    let pool = ELEMENTS.filter(e=>e.z<=56).map(e=>e.z);
+    let current = null;
+
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+    function save(){
+      const stats = {correct: +$('#correct').textContent, wrong:+$('#wrong').textContent, streak:+$('#streak').textContent, mastered:+$('#mastered').textContent};
+      localStorage.setItem('eltrain.stats', JSON.stringify(stats));
+      localStorage.setItem('eltrain.pool', JSON.stringify(pool));
+      localStorage.setItem('eltrain.mode', mode);
+    }
+    function load(){
+      try{
+        const stats = JSON.parse(localStorage.getItem('eltrain.stats')||'null');
+        if(stats){
+          $('#correct').textContent = stats.correct||0;
+          $('#wrong').textContent = stats.wrong||0;
+          $('#streak').textContent = stats.streak||0;
+          $('#mastered').textContent = stats.mastered||0;
+        }
+        const p = JSON.parse(localStorage.getItem('eltrain.pool')||'null');
+        if(p && Array.isArray(p) && p.length) pool = p;
+        const m = localStorage.getItem('eltrain.mode');
+        if(m) setMode(m);
+      }catch{}
+    }
+
+    // ——————————— UI Helpers
+    function setMode(m){
+      mode = m;
+      $$('.tab').forEach(t=>t.classList.toggle('active', t.dataset.mode===m));
+      const answer = $('#answer');
+      answer.value = '';
+      if(mode==='spell-name'){
+        $('#prompt').innerHTML = `Symbol ➜ <span id="prompt-val"></span> <small id="prompt-sub"></small>`;
+        answer.placeholder = 'Type the element name…';
+      }else if(mode==='symbol'){
+        $('#prompt').innerHTML = `Name ➜ <span id="prompt-val"></span> <small id="prompt-sub"></small>`;
+        answer.placeholder = 'Type the symbol (e.g., Na)…';
+      }else{
+        $('#prompt').innerHTML = `Formula ➜ <span id="prompt-val"></span> <small id="prompt-sub"></small>`;
+        answer.placeholder = 'Type the name (e.g., carbon dioxide)…';
+      }
+      next();
+      save();
+    }
+
+    function randFrom(arr){return arr[Math.floor(Math.random()*arr.length)]}
+
+    function next(){
+      $('#hint').textContent='';
+      $('#answer').classList.remove('ok','bad');
+      const pv = $('#prompt-val');
+      if(mode==='spell-name' || mode==='symbol'){
+        const z = randFrom(pool);
+        current = ELEMENTS.find(e=>e.z===z);
+        if(mode==='spell-name'){ pv.textContent = current.s; $('#prompt-sub').textContent = `Z=${current.z}`; }
+        else { pv.textContent = current.n; $('#prompt-sub').textContent = `Z=${current.z}`; }
+      } else {
+        current = makeRandomBinary();
+        pv.innerHTML = current.formulaHTML;
+        $('#prompt-sub').textContent = current.explain;
+      }
+      $('#answer').focus();
+    }
+
+    function normalize(x){return x.toLowerCase().replace(/\s+/g,' ').trim();}
+
+    function check(){
+      const val = normalize($('#answer').value);
+      if(!val) return;
+      if(mode==='spell-name'){
+        const ok = val===normalize(current.n);
+        mark(ok, `Correct: ${current.n}`, `It's ${current.n}.`);
+      } else if(mode==='symbol'){
+        const ok = val===current.s.toLowerCase();
+        mark(ok, `Correct: ${current.s}`, `It's ${current.s}.`);
+      } else {
+        const expected = expectedName(current);
+        const alts = altNames(expected);
+        const ok = alts.includes(val);
+        mark(ok, `Correct: ${expected}`, `Answer: ${expected}`);
+      }
+    }
+
+    function mark(ok, okMsg, badMsg){
+      if(ok){
+        $('#answer').classList.remove('bad');
+        $('#answer').classList.add('ok');
+        $('#hint').innerHTML = `<span class="success">${okMsg}</span>`;
+        bump('correct'); bumpStreak(true); celebrate();
+        setTimeout(()=>{ $('#answer').value=''; next(); }, 700);
+      } else {
+        $('#answer').classList.remove('ok');
+        $('#answer').classList.add('bad');
+        $('#hint').innerHTML = `<span class="error">${badMsg}</span>`;
+        bump('wrong'); bumpStreak(false);
+      }
+      updateAcc();
+      save();
+    }
+
+    function bump(id){
+      const el = $('#'+id);
+      el.textContent = (+el.textContent)+1;
+    }
+    function bumpStreak(ok){
+      const s = $('#streak');
+      let v = +s.textContent;
+      v = ok ? v+1 : 0;
+      s.textContent = v;
+      if(ok && v%10===0){ // every 10 in a row, count mastered
+        $('#mastered').textContent = (+$('#mastered').textContent)+1;
+      }
+    }
+    function updateAcc(){
+      const c = +$('#correct').textContent;
+      const w = +$('#wrong').textContent;
+      const acc = c+w===0?0:Math.round(100*c/(c+w));
+      $('#acc').textContent = acc+"%";
+    }
+
+    // ——————————— Scope controls
+    $$('#scope button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        $$('#scope button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const sc = btn.dataset.scope;
+        if(sc==='1-56'){ pool = ELEMENTS.filter(e=>e.z<=56).map(e=>e.z); $('#custom-range').style.display='none'; }
+        else if(sc==='1-118'){ pool = ELEMENTS.map(e=>e.z); $('#custom-range').style.display='none'; }
+        else { $('#custom-range').style.display='flex'; }
+        next(); save();
+      })
+    })
+
+    $('#apply-range').addEventListener('click', ()=>{
+      const txt = $('#range-input').value;
+      pool = parseRanges(txt);
+      if(pool.length===0){ alert('Range produced an empty set. Example: 1-20, 35, 40-56'); return; }
+      next(); save();
+    })
+
+    function parseRanges(txt){
+      const out = new Set();
+      txt.split(',').map(s=>s.trim()).forEach(part=>{
+        if(/^(\d+)\s*-\s*(\d+)$/.test(part)){
+          const [_,a,b] = part.match(/(\d+)\s*-\s*(\d+)/);
+          const A = Math.max(1, Math.min(118, +a));
+          const B = Math.max(1, Math.min(118, +b));
+          const [lo,hi] = A<=B?[A,B]:[B,A];
+          for(let i=lo;i<=hi;i++) out.add(i);
+        } else if(/^(\d+)$/.test(part)){
+          const v = Math.max(1, Math.min(118, +part));
+          out.add(v);
+        }
+      });
+      return Array.from(out);
+    }
+
+    // ——————————— Tabs
+    $$('.tab').forEach(t=> t.addEventListener('click', ()=> setMode(t.dataset.mode)) );
+
+    // ——————————— Actions
+    $('#check').addEventListener('click', check);
+    $('#skip').addEventListener('click', next);
+    $('#answer').addEventListener('keydown', (e)=>{
+      if(e.key==='Enter') check();
+      if(e.key.toLowerCase()==='h') hint();
+    });
+
+    function hint(){
+      if(mode==='spell-name'){
+        const name = current.n;
+        const shown = Math.min( Math.floor(($('#answer').value||'').length)+1, name.length-1 );
+        $('#hint').textContent = name.slice(0,shown) + '…';
+      } else if(mode==='symbol'){
+        $('#hint').textContent = current.s[0] + (current.s[1] ? '…' : '');
+      } else {
+        const expected = expectedName(current);
+        const words = expected.split(' ');
+        const shown = words[0].slice(0,2) + '… ' + (words[1] ? words[1].slice(0,2)+'…' : '');
+        $('#hint').textContent = shown;
+      }
+    }
+
+    // ——————————— Prefix game logic
+    function makeRandomBinary(){
+      const e1 = ELEMENTS.filter(e=> NONMETALS.includes(e.n.toLowerCase()) );
+      const a = randFrom(e1);
+      let b = randFrom(e1);
+      // avoid duplicates like O + O (still fine, but vary):
+      if(Math.random()<.5){
+        for(let i=0;i<10 && b.n===a.n;i++) b = randFrom(e1);
+      }
+      const c1 = 1 + Math.floor(Math.random()*4); // 1–4
+      const c2 = 1 + Math.floor(Math.random()*6); // 1–6
+      return {
+        a:a.n.toLowerCase(), b:b.n.toLowerCase(), c1, c2,
+        formulaHTML: `${cap(a.s)}<sub>${c1===1?'':c1}</sub>${cap(b.s)}<sub>${c2===1?'':c2}</sub>`,
+        explain: `${a.n} + ${b.n}`
+      };
+    }
+
+    function expectedName(obj){
+      const {a,b,c1,c2} = obj;
+      const first = nameWithPrefix(a, c1, true);
+      const second = nameWithPrefix(ide(b), c2, false);
+      return `${first} ${second}`.replace(/\s+/g,' ').trim();
+    }
+
+    function altNames(expected){
+      // allow hyphenation flexibility & optional mono on first element
+      const e = expected;
+      const alts = new Set([normalize(e), normalize(e.replace(/-/g,' '))]);
+      // remove hyphens entirely
+      alts.add( normalize(e.replace(/-/g,'')) );
+      return Array.from(alts);
+    }
+
+    function nameWithPrefix(base, count, isFirst){
+      let p = PREFIXES[count] || '';
+      let stem = base;
+      if(isFirst && count===1) p = ''; // omit mono for first element
+      // vowel collision fixes (monoxide, pentoxide)
+      if(p){
+        if(/^(oxide)/.test(base)) p = p.replace(/o$/,'');
+        if(/^(iodide|oxide)/.test(base)) p = p.replace(/a$/,'');
+      }
+      return (p? p + (base.startsWith('oxide') || base.startsWith('iodide')? '' : '-') : '') + stem;
+    }
+
+    function ide(name){
+      const n = name.toLowerCase();
+      if(IDE_ENDINGS[n]) return IDE_ENDINGS[n];
+      if(n.endsWith('ine')) return n.replace(/ine$/,'ide');
+      if(n.endsWith('gen')) return n.replace(/gen$/,'ide');
+      if(n.endsWith('ur')) return n+'ide';
+      return n+'ide';
+    }
+
+    function cap(x){return x}
+
+    // ——————————— Confetti
+    function celebrate(){
+      const box = $('#confetti');
+      const colors = ['#8b5cf6','#22c55e','#f472b6','#06b6d4','#f59e0b'];
+      for(let i=0;i<24;i++){
+        const p = document.createElement('div');
+        p.className='p';
+        p.style.background = colors[Math.floor(Math.random()*colors.length)];
+        p.style.left = (Math.random()*100)+'vw';
+        p.style.top = '-10px';
+        const rot = Math.random()*360;
+        p.animate([
+          { transform:`translateY(0) rotate(${rot}deg)` , opacity:1},
+          { transform:`translateY(${window.innerHeight+50}px) rotate(${rot+360}deg)`, opacity:0.9}
+        ], {duration: 1200 + Math.random()*800, easing:'cubic-bezier(.2,.7,.2,1)'}).onfinish=()=> p.remove();
+        box.appendChild(p);
+      }
+      const a = $('#ding');
+      try{ a.currentTime=0; a.play(); }catch{}
+    }
+
+    // ——————————— Element list render
+    function renderList(){
+      const box = $('#elist');
+      box.innerHTML = '';
+      ELEMENTS.forEach(e=>{
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `<div>#${e.z}</div><div><strong>${e.s}</strong></div><div>${e.n}</div>`;
+        box.appendChild(row);
+      })
+    }
+
+    // ——————————— Boot
+    load();
+    renderList();
+    setMode(mode);
+    next();
+  </script>
+</body>
+</html>
