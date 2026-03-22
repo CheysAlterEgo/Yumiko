@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feed Arma Game</title>
+
+<style>
+body {
+  margin:0;
+  background:#EEEEEE;
+  font-family: "Courier New", monospace;
+  overflow:hidden;
+}
+
+.text {
+  position:absolute;
+  top:20px;
+  width:100%;
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
+  pointer-events:none;
+}
+
+.pink { color:#ff6ec7; }
+.teal { color:#00cfcf; }
+
+#armaContainer {
+  position:absolute;
+  bottom:40px;
+  left:40px;
+  text-align:center;
+}
+
+#yumikoContainer {
+  position:absolute;
+  bottom:40px;
+  right:40px;
+}
+
+#jar {
+  position:absolute;
+  top:40px;
+  right:80px;
+  width:120px;
+  cursor:grab;
+}
+
+#cookie {
+  position:absolute;
+  width:80px;
+  display:none;
+  pointer-events:none;
+}
+
+video {
+  width:150px;
+}
+
+img {
+  width:150px;
+}
+
+#vexWarning {
+  position:absolute;
+  top:80px;
+  width:100%;
+  text-align:center;
+  display:none;
+}
+
+#vexWarning img {
+  width:120px;
+}
+
+#gameOver {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:black;
+  color:white;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+
+button {
+  padding:10px 20px;
+  margin-top:20px;
+  font-size:18px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div id="text" class="text pink">Give Arma a cookie!</div>
+
+<!-- ARMA -->
+<div id="armaContainer">
+  <div>Cookies: <span id="counter">0</span></div>
+  <img id="arma" src="arma1.jpg">
+</div>
+
+<!-- YUMIKO -->
+<div id="yumikoContainer">
+  <video id="yumiko" autoplay loop muted playsinline></video>
+</div>
+
+<!-- COOKIE JAR -->
+<img id="jar" src="cookiejar.PNG">
+
+<!-- COOKIE -->
+<img id="cookie" src="cookie.PNG">
+
+<!-- VEX -->
+<div id="vexWarning">
+  <div class="text teal">Vex is waking up, don't move</div>
+  <img src="vex.PNG">
+</div>
+
+<!-- GAME OVER -->
+<div id="gameOver">
+  <h1>Vex got you</h1>
+  <img src="gameover.jpg" style="width:200px;">
+  <button onclick="restart()">Play Again</button>
+</div>
+
+<script>
+let cookie = document.getElementById("cookie");
+let jar = document.getElementById("jar");
+let yumiko = document.getElementById("yumiko");
+let arma = document.getElementById("arma");
+let counter = document.getElementById("counter");
+let text = document.getElementById("text");
+let vexBox = document.getElementById("vexWarning");
+
+let dragging = false;
+let runnerMode = false;
+let vexActive = false;
+let score = 0;
+
+/* YOUR VIDEO FILES */
+let idols = ["idol1.mov","idol2.mov","idol3.mov"];
+
+/* RANDOM IDOL */
+function randomIdol(){
+  yumiko.src = idols[Math.floor(Math.random()*idols.length)];
+}
+randomIdol();
+
+/* START MESSAGE */
+setTimeout(()=>{
+  alert("Haiii shhh be quiet dont wake up Vex, help me feed Arma okay!!");
+},200);
+
+/* DRAG COOKIE */
+jar.onmousedown = () => {
+  cookie.style.display = "block";
+  dragging = true;
+};
+
+document.onmouseup = () => dragging = false;
+
+document.onmousemove = (e) => {
+
+  if(vexActive){
+    gameOver();
+    return;
+  }
+
+  if(dragging && !runnerMode){
+    cookie.style.left = e.pageX + "px";
+    cookie.style.top = e.pageY + "px";
+
+    let yRect = yumiko.getBoundingClientRect();
+    let cRect = cookie.getBoundingClientRect();
+
+    if(intersect(cRect, yRect)){
+      startRun();
+    }
+  }
+
+  if(runnerMode){
+    yumiko.style.position = "absolute";
+    yumiko.style.left = e.pageX + "px";
+    yumiko.style.top = e.pageY + "px";
+
+    let aRect = arma.getBoundingClientRect();
+    let yRect = yumiko.getBoundingClientRect();
+
+    let dist = Math.hypot(
+      aRect.x - yRect.x,
+      aRect.y - yRect.y
+    );
+
+    if(dist < 200){
+      arma.src = "arma2.jpg";
+    }
+
+    if(intersect(aRect,yRect)){
+      success();
+    }
+  }
+};
+
+/* START RUN */
+function startRun(){
+  runnerMode = true;
+  cookie.style.display = "none";
+
+  text.innerText = "RUNNN";
+  text.className = "text pink";
+
+  yumiko.src = "yumirunning.mov";
+}
+
+/* SUCCESS */
+function success(){
+  runnerMode = false;
+  score++;
+  counter.innerText = score;
+
+  arma.src = "arma3.jpg";
+
+  text.innerText = "Congratulations!";
+
+  setTimeout(()=>{
+    arma.src = "arma1.jpg";
+    yumiko.style.position = "static";
+    randomIdol();
+    text.innerText = "Give Arma a cookie!";
+  },1500);
+}
+
+/* INTERSECTION */
+function intersect(r1, r2){
+  return !(
+    r2.left > r1.right ||
+    r2.right < r1.left ||
+    r2.top > r1.bottom ||
+    r2.bottom < r1.top
+  );
+}
+
+/* VEX SYSTEM */
+function triggerVex(){
+  vexActive = true;
+  vexBox.style.display = "block";
+
+  text.innerText = "Vex is waking up...";
+  text.className = "text teal";
+
+  setTimeout(()=>{
+    vexActive = false;
+    vexBox.style.display = "none";
+    text.innerText = "Give Arma a cookie!";
+    text.className = "text pink";
+  },20000);
+}
+
+setInterval(triggerVex, 30000);
+
+/* GAME OVER */
+function gameOver(){
+  document.getElementById("gameOver").style.display = "flex";
+}
+
+/* RESTART */
+function restart(){
+  location.reload();
+}
+</script>
+
+</body>
+</html>
