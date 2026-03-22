@@ -12,6 +12,16 @@ font-family:"Courier New", monospace;
 overflow:hidden;
 }
 
+/* BORDER FRAME */
+body::before{
+content:"";
+position:fixed;
+top:10px; left:10px; right:10px; bottom:10px;
+border:6px solid #ffb6e6;
+border-radius:20px;
+pointer-events:none;
+}
+
 /* TEXT */
 .text{
 position:absolute;
@@ -20,13 +30,10 @@ width:100%;
 text-align:center;
 font-size:26px;
 font-weight:bold;
-pointer-events:none;
 animation:pulse 1.2s infinite;
 }
 @keyframes pulse{
-0%{transform:scale(1);}
 50%{transform:scale(1.05);}
-100%{transform:scale(1);}
 }
 
 .pink{color:#ff6ec7;}
@@ -40,7 +47,19 @@ left:40px;
 text-align:center;
 }
 #arma{
-width:120px; /* FIXED SIZE */
+width:140px;
+}
+
+/* COOKIE COUNTER (COOKIE STYLE) */
+#counterBox{
+position:absolute;
+bottom:200px;
+left:30px;
+background:#d9a066;
+border:4px solid #7a4a1c;
+border-radius:50px;
+padding:10px 20px;
+font-weight:bold;
 }
 
 /* YUMIKO */
@@ -57,66 +76,66 @@ width:140px;
 #jar{
 position:absolute;
 top:40px;
-right:80px;
-width:110px;
+right:60px;
+width:150px;
 cursor:pointer;
 }
 
 /* COOKIE */
 #cookie{
 position:absolute;
-width:70px;
+width:80px;
 display:none;
 pointer-events:none;
 z-index:999;
 }
 
-/* INTRO BOX */
+/* RUNNING IMAGE */
+#runner{
+position:absolute;
+width:140px;
+display:none;
+pointer-events:none;
+z-index:998;
+}
+
+/* INTRO */
 #intro{
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+top:0; left:0;
+width:100%; height:100%;
 display:flex;
 justify-content:center;
 align-items:center;
-background:rgba(0,0,0,0.4);
-z-index:9999;
+background:rgba(0,0,0,0.5);
 }
 #introBox{
-background:#ffd6f5;
+background:linear-gradient(#ffd6f5,#c6f0ff);
+border:5px solid #ff6ec7;
+border-radius:15px;
 padding:30px;
-border:4px solid #ff6ec7;
-border-radius:10px;
 text-align:center;
-}
-#intro button{
-margin-top:10px;
-padding:10px;
-font-size:16px;
-cursor:pointer;
+box-shadow:0 0 20px pink;
 }
 
 /* VEX */
 #vex{
 position:absolute;
-top:80px;
+top:120px;
 width:100%;
 text-align:center;
 display:none;
 }
 #vex img{
-width:250px;
+width:300px;
+margin-top:40px;
 }
 
 /* GAME OVER */
 #gameOver{
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+top:0; left:0;
+width:100%; height:100%;
 background:black;
 color:white;
 display:none;
@@ -134,15 +153,17 @@ flex-direction:column;
 <!-- INTRO -->
 <div id="intro">
 <div id="introBox">
-<h2>Haiii 😭</h2>
-<p>shhh be quiet… don’t wake up Vex…<br>help me feed Arma okay!!</p>
+<h2>Haiii ⸜(｡˃ ᵕ ˂ )⸝♡ </h2>
+<p>Shhh… don’t wake up Vex…<br>feed Arma cookies okay!!</p>
 <button onclick="startGame()">OKAY!</button>
 </div>
 </div>
 
+<!-- COOKIE COUNTER -->
+<div id="counterBox">🍪 <span id="counter">0</span></div>
+
 <!-- ARMA -->
 <div id="armaContainer">
-<div>Cookies: <span id="counter">0</span></div>
 <img id="arma" src="arma1.jpg">
 </div>
 
@@ -151,23 +172,26 @@ flex-direction:column;
 <video id="yumiko" autoplay muted loop></video>
 </div>
 
-<!-- JAR -->
+<!-- COOKIE JAR -->
 <img id="jar" src="cookiejar.PNG">
 
 <!-- COOKIE -->
 <img id="cookie" src="cookie.PNG">
 
+<!-- RUNNER TEST -->
+<img id="runner" src="deviorandkairo.PNG">
+
 <!-- VEX -->
 <div id="vex">
-<div class="text teal" id="vexText"></div>
+<div class="text teal">DON'T MOVE</div>
 <img src="vex.PNG">
 </div>
 
 <!-- GAME OVER -->
 <div id="gameOver">
-<h1>Vex got you</h1>
-<img src="gameover.jpg" width="200">
-<button onclick="location.reload()">Play Again</button>
+<h1>Vex Got You  \(˚☐˚”)/  </h1>
+<img src="gameover.jpg" width="260">
+<button onclick="location.reload()">Play Again ദ്ദി( •̀ ᴗ - ˵ ) </button>
 </div>
 
 <script>
@@ -178,10 +202,10 @@ let arma=document.getElementById("arma");
 let counter=document.getElementById("counter");
 let text=document.getElementById("text");
 let vex=document.getElementById("vex");
-let vexText=document.getElementById("vexText");
+let runner=document.getElementById("runner");
 
 let cookieActive=false;
-let runnerMode=false;
+let runnerActive=false;
 let vexActive=false;
 let score=0;
 
@@ -199,12 +223,13 @@ randomIdol();
 startVexLoop();
 }
 
-/* COOKIE FOLLOW SYSTEM */
+/* COOKIE CLICK */
 jar.onclick=()=>{
 cookieActive=true;
 cookie.style.display="block";
 };
 
+/* MOUSE */
 document.onmousemove=(e)=>{
 
 if(vexActive){
@@ -212,40 +237,47 @@ gameOver();
 return;
 }
 
-if(cookieActive && !runnerMode){
-cookie.style.left=(e.pageX-35)+"px";
-cookie.style.top=(e.pageY-35)+"px";
+/* COOKIE */
+if(cookieActive && !runnerActive){
+cookie.style.left=(e.pageX-40)+"px";
+cookie.style.top=(e.pageY-40)+"px";
 
-if(intersect(cookie,yumiko)){
-startRun();
+if(hit(cookie,yumiko)){
+startRun(e);
 }
 }
 
-if(runnerMode){
-yumiko.style.position="absolute";
-yumiko.style.left=(e.pageX-70)+"px";
-yumiko.style.top=(e.pageY-70)+"px";
+/* RUNNER */
+if(runnerActive){
+runner.style.left=(e.pageX-70)+"px";
+runner.style.top=(e.pageY-70)+"px";
 
-if(intersect(yumiko,arma)){
+if(hit(runner,arma)){
 success();
 }
 }
 };
 
-function startRun(){
-runnerMode=true;
+/* START RUN */
+function startRun(e){
 cookieActive=false;
 cookie.style.display="none";
 
+runnerActive=true;
+runner.style.display="block";
+
 text.innerText="RUNNN";
 
-yumiko.src="yumirunning.mov";
-yumiko.load();
-yumiko.play();
+/* spawn runner at cursor */
+runner.style.left=(e.pageX-70)+"px";
+runner.style.top=(e.pageY-70)+"px";
 }
 
+/* SUCCESS */
 function success(){
-runnerMode=false;
+runnerActive=false;
+runner.style.display="none";
+
 score++;
 counter.innerText=score;
 
@@ -254,34 +286,29 @@ text.innerText="YAYYY";
 
 setTimeout(()=>{
 arma.src="arma1.jpg";
-yumiko.style.position="static";
 randomIdol();
 text.innerText="Give Arma a cookie!";
 },1500);
 }
 
-function intersect(a,b){
+function hit(a,b){
 let r1=a.getBoundingClientRect();
 let r2=b.getBoundingClientRect();
 return !(r2.left>r1.right||r2.right<r1.left||r2.top>r1.bottom||r2.bottom<r1.top);
 }
 
-/* VEX SYSTEM (2 PHASE) */
+/* VEX SYSTEM */
 function startVexLoop(){
 setInterval(()=>{
 
-/* WARNING */
 text.innerText="Vex is waking up...";
 text.className="text teal";
 
-/* AFTER 5s → REAL DANGER */
 setTimeout(()=>{
 vex.style.display="block";
-vexText.innerText="DON'T MOVE";
 vexActive=true;
 },5000);
 
-/* END */
 setTimeout(()=>{
 vex.style.display="none";
 vexActive=false;
