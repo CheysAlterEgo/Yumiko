@@ -12,7 +12,7 @@ font-family:"Courier New", monospace;
 overflow:hidden;
 }
 
-/* BORDER FRAME */
+/* BORDER */
 body::before{
 content:"";
 position:fixed;
@@ -32,9 +32,7 @@ font-size:26px;
 font-weight:bold;
 animation:pulse 1.2s infinite;
 }
-@keyframes pulse{
-50%{transform:scale(1.05);}
-}
+@keyframes pulse{50%{transform:scale(1.05);} }
 
 .pink{color:#ff6ec7;}
 .teal{color:#00cfcf;}
@@ -44,17 +42,18 @@ animation:pulse 1.2s infinite;
 position:absolute;
 bottom:40px;
 left:40px;
-text-align:center;
-}
-#arma{
-width:140px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:10px;
 }
 
-/* COOKIE COUNTER (COOKIE STYLE) */
+#arma{
+width:260px; /* BIGGER */
+}
+
+/* COOKIE COUNTER (NOW RELATIVE) */
 #counterBox{
-position:absolute;
-bottom:200px;
-left:30px;
 background:#d9a066;
 border:4px solid #7a4a1c;
 border-radius:50px;
@@ -69,7 +68,7 @@ bottom:40px;
 right:40px;
 }
 #yumiko{
-width:140px;
+width:260px; /* BIGGER */
 }
 
 /* JAR */
@@ -77,23 +76,23 @@ width:140px;
 position:absolute;
 top:40px;
 right:60px;
-width:150px;
+width:170px;
 cursor:pointer;
 }
 
 /* COOKIE */
 #cookie{
 position:absolute;
-width:80px;
+width:90px;
 display:none;
 pointer-events:none;
 z-index:999;
 }
 
-/* RUNNING IMAGE */
+/* RUNNER VIDEO */
 #runner{
 position:absolute;
-width:140px;
+width:260px;
 display:none;
 pointer-events:none;
 z-index:998;
@@ -121,14 +120,14 @@ box-shadow:0 0 20px pink;
 /* VEX */
 #vex{
 position:absolute;
-top:120px;
+top:140px;
 width:100%;
 text-align:center;
 display:none;
 }
 #vex img{
-width:300px;
-margin-top:40px;
+width:340px;
+margin-top:60px;
 }
 
 /* GAME OVER */
@@ -142,6 +141,7 @@ display:none;
 justify-content:center;
 align-items:center;
 flex-direction:column;
+gap:20px;
 }
 </style>
 </head>
@@ -153,23 +153,21 @@ flex-direction:column;
 <!-- INTRO -->
 <div id="intro">
 <div id="introBox">
-<h2>Haiii ⸜(｡˃ ᵕ ˂ )⸝♡ </h2>
+<h2>Haiii ⸜(｡˃ ᵕ ˂ )⸝♡</h2>
 <p>Shhh… don’t wake up Vex…<br>feed Arma cookies okay!!</p>
 <button onclick="startGame()">OKAY!</button>
 </div>
 </div>
 
-<!-- COOKIE COUNTER -->
-<div id="counterBox">🍪 <span id="counter">0</span></div>
-
 <!-- ARMA -->
 <div id="armaContainer">
+<div id="counterBox">🍪 <span id="counter">0</span></div>
 <img id="arma" src="arma1.jpg">
 </div>
 
 <!-- YUMIKO -->
 <div id="yumikoContainer">
-<video id="yumiko" autoplay muted loop></video>
+<video id="yumiko" autoplay muted loop playsinline></video>
 </div>
 
 <!-- COOKIE JAR -->
@@ -178,8 +176,10 @@ flex-direction:column;
 <!-- COOKIE -->
 <img id="cookie" src="cookie.PNG">
 
-<!-- RUNNER TEST -->
-<img id="runner" src="deviorandkairo.PNG">
+<!-- RUNNER VIDEO -->
+<video id="runner" muted playsinline loop>
+<source src="yumirunning.mov" type="video/mp4">
+</video>
 
 <!-- VEX -->
 <div id="vex">
@@ -189,9 +189,9 @@ flex-direction:column;
 
 <!-- GAME OVER -->
 <div id="gameOver">
-<h1>Vex Got You  \(˚☐˚”)/  </h1>
-<img src="gameover.jpg" width="260">
-<button onclick="location.reload()">Play Again ദ്ദി( •̀ ᴗ - ˵ ) </button>
+<h1>Vex Got You \(˚☐˚”)/</h1>
+<img src="gameover.jpg" width="300">
+<button onclick="location.reload()">Play Again ദ്ദി( •̀ ᴗ - ˵ )</button>
 </div>
 
 <script>
@@ -239,8 +239,8 @@ return;
 
 /* COOKIE */
 if(cookieActive && !runnerActive){
-cookie.style.left=(e.pageX-40)+"px";
-cookie.style.top=(e.pageY-40)+"px";
+cookie.style.left=(e.pageX-45)+"px";
+cookie.style.top=(e.pageY-45)+"px";
 
 if(hit(cookie,yumiko)){
 startRun(e);
@@ -249,8 +249,8 @@ startRun(e);
 
 /* RUNNER */
 if(runnerActive){
-runner.style.left=(e.pageX-70)+"px";
-runner.style.top=(e.pageY-70)+"px";
+runner.style.left=(e.pageX-130)+"px";
+runner.style.top=(e.pageY-130)+"px";
 
 if(hit(runner,arma)){
 success();
@@ -263,20 +263,29 @@ function startRun(e){
 cookieActive=false;
 cookie.style.display="none";
 
+/* hide idol */
+yumiko.style.display="none";
+
 runnerActive=true;
 runner.style.display="block";
 
+runner.currentTime=0;
+runner.play();
+
 text.innerText="RUNNN";
 
-/* spawn runner at cursor */
-runner.style.left=(e.pageX-70)+"px";
-runner.style.top=(e.pageY-70)+"px";
+runner.style.left=(e.pageX-130)+"px";
+runner.style.top=(e.pageY-130)+"px";
 }
 
 /* SUCCESS */
 function success(){
 runnerActive=false;
 runner.style.display="none";
+runner.pause();
+
+/* show idol again */
+yumiko.style.display="block";
 
 score++;
 counter.innerText=score;
@@ -297,7 +306,7 @@ let r2=b.getBoundingClientRect();
 return !(r2.left>r1.right||r2.right<r1.left||r2.top>r1.bottom||r2.bottom<r1.top);
 }
 
-/* VEX SYSTEM */
+/* VEX */
 function startVexLoop(){
 setInterval(()=>{
 
