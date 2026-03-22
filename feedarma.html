@@ -234,6 +234,7 @@ let runner=document.getElementById("runner");
 let cookieActive=false;
 let runnerActive=false;
 let vexActive=false;
+let gameEnded=false; // ✅ NEW
 let score=0;
 
 let idols=["idol1.mov","idol2.mov","idol3.mov"];
@@ -252,11 +253,14 @@ startVexLoop();
 
 /* COOKIE */
 jar.onclick=()=>{
+if(gameEnded) return; // ✅ prevent after death
 cookieActive=true;
 cookie.style.display="block";
 };
 
 document.onmousemove=(e)=>{
+
+if(gameEnded) return; // ✅ STOP EVERYTHING AFTER GAME OVER
 
 if(vexActive){
 gameOver();
@@ -301,13 +305,11 @@ runner.style.left=(e.pageX-130)+"px";
 runner.style.top=(e.pageY-130)+"px";
 }
 
-/* SUCCESS (🌈 CLEAN VERSION) */
+/* SUCCESS */
 function success(){
 runnerActive=false;
 runner.style.display="none";
 runner.pause();
-
-/* KEEP YUMIKO HIDDEN */
 
 score++;
 counter.innerText=score;
@@ -315,13 +317,11 @@ counter.innerText=score;
 arma.src="arma3.jpg";
 text.innerText="YAYYY!!!";
 
-/* 🌈 rainbow border */
 document.body.classList.add("rainbow");
 
 setTimeout(()=>{
 document.body.classList.remove("rainbow");
 
-/* restore AFTER animation */
 yumiko.style.display="block";
 arma.src="arma1.jpg";
 randomIdol();
@@ -340,23 +340,25 @@ return !(r2.left>r1.right||r2.right<r1.left||r2.top>r1.bottom||r2.bottom<r1.top)
 function startVexLoop(){
 setInterval(()=>{
 
+if(gameEnded) return; // ✅ stop loop after death
+
 text.innerText="Vex is waking up...";
 text.className="text teal";
 
 setTimeout(()=>{
+if(gameEnded) return;
+
 vex.style.display="block";
 vexActive=true;
-
-/* SHAKE ON */
 document.body.classList.add("shake");
 
 },5000);
 
 setTimeout(()=>{
+if(gameEnded) return;
+
 vex.style.display="none";
 vexActive=false;
-
-/* SHAKE OFF */
 document.body.classList.remove("shake");
 
 text.innerText="Give Arma a cookie!";
@@ -366,7 +368,24 @@ text.className="text pink";
 },30000);
 }
 
+/* 💀 GAME OVER FIXED */
 function gameOver(){
+gameEnded=true; // ✅ lock game
+
+// HIDE EVERYTHING
+cookie.style.display="none";
+runner.style.display="none";
+yumiko.style.display="none";
+arma.style.display="none";
+jar.style.display="none";
+text.style.display="none";
+vex.style.display="none";
+
+// REMOVE EFFECTS
+document.body.classList.remove("shake");
+document.body.classList.remove("rainbow");
+
+// SHOW GAME OVER SCREEN
 document.getElementById("gameOver").style.display="flex";
 }
 </script>
