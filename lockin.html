@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
     <title>♡ Nightly Tracker ♡</title>
     <style>
-        /* =========================================================
-           BASIC SETUP
-        ========================================================= */
         * {
             box-sizing: border-box;
         }
@@ -24,10 +24,27 @@
                 sans-serif;
             color: #743f59;
             background:
-                radial-gradient(circle at 15% 20%, rgba(255,255,255,0.9) 0 3px, transparent 4px),
-                radial-gradient(circle at 80% 30%, rgba(255,255,255,0.7) 0 2px, transparent 3px),
-                radial-gradient(circle at 30% 85%, rgba(255,255,255,0.8) 0 3px, transparent 4px),
-                linear-gradient(135deg, #fff0f7, #ffe0ee, #ffd4e7);
+                radial-gradient(
+                    circle at 15% 20%,
+                    rgba(255,255,255,0.9) 0 3px,
+                    transparent 4px
+                ),
+                radial-gradient(
+                    circle at 80% 30%,
+                    rgba(255,255,255,0.7) 0 2px,
+                    transparent 3px
+                ),
+                radial-gradient(
+                    circle at 30% 85%,
+                    rgba(255,255,255,0.8) 0 3px,
+                    transparent 4px
+                ),
+                linear-gradient(
+                    135deg,
+                    #fff0f7,
+                    #ffe0ee,
+                    #ffd4e7
+                );
             background-size:
                 180px 180px,
                 230px 230px,
@@ -35,9 +52,9 @@
                 100% 100%;
             overflow-x: hidden;
         }
-        /* =========================================================
-           FLOATING BACKGROUND HEARTS
-        ========================================================= */
+        /* =====================================================
+           BACKGROUND DECORATION
+        ===================================================== */
         .background-decoration {
             position: fixed;
             inset: 0;
@@ -48,7 +65,8 @@
         .floating-heart {
             position: absolute;
             opacity: 0.35;
-            animation: floatAround 8s ease-in-out infinite;
+            animation:
+                floatAround 8s ease-in-out infinite;
             user-select: none;
         }
         .heart1 {
@@ -75,26 +93,32 @@
             animation-delay: 3s;
         }
         @keyframes floatAround {
-            0%, 100% {
-                transform: translateY(0) rotate(-5deg);
+            0%,
+            100% {
+                transform:
+                    translateY(0)
+                    rotate(-5deg);
             }
             50% {
-                transform: translateY(-18px) rotate(5deg);
+                transform:
+                    translateY(-18px)
+                    rotate(5deg);
             }
         }
-        /* =========================================================
-           MAIN CONTAINER
-        ========================================================= */
+        /* =====================================================
+           PAGE
+        ===================================================== */
         .page {
             position: relative;
             z-index: 1;
-            width: min(900px, calc(100% - 30px));
+            width:
+                min(900px, calc(100% - 30px));
             margin: 0 auto;
             padding: 45px 0 60px;
         }
-        /* =========================================================
+        /* =====================================================
            HEADER
-        ========================================================= */
+        ===================================================== */
         .header {
             text-align: center;
             margin-bottom: 25px;
@@ -103,41 +127,49 @@
             display: inline-block;
             padding: 7px 16px;
             border-radius: 999px;
-            background: rgba(255,255,255,0.7);
+            background:
+                rgba(255,255,255,0.7);
             color: #b85d82;
             font-size: 12px;
             font-weight: bold;
             letter-spacing: 2px;
             box-shadow:
-                0 4px 15px rgba(180, 91, 126, 0.08);
+                0 4px 15px
+                rgba(180,91,126,0.08);
         }
         h1 {
             margin: 14px 0 5px;
             color: #a94772;
-            font-size: clamp(32px, 7vw, 58px);
+            font-size:
+                clamp(32px, 7vw, 58px);
             line-height: 1;
             letter-spacing: -2px;
             text-shadow:
-                2px 3px 0 rgba(255,255,255,0.8);
+                2px 3px 0
+                rgba(255,255,255,0.8);
         }
         .subtitle {
             margin: 12px 0 0;
             color: #9b627b;
             font-size: 15px;
         }
-        /* =========================================================
-           DATE CARD
-        ========================================================= */
+        /* =====================================================
+           DATE
+        ===================================================== */
         .date-card {
             width: fit-content;
             max-width: 100%;
             margin: 25px auto 0;
             padding: 12px 24px;
             border-radius: 18px;
-            background: rgba(255,255,255,0.75);
-            border: 1px solid rgba(255,255,255,0.9);
+            background:
+                rgba(255,255,255,0.75);
+            border:
+                1px solid
+                rgba(255,255,255,0.9);
             box-shadow:
-                0 8px 25px rgba(171, 77, 117, 0.08);
+                0 8px 25px
+                rgba(171,77,117,0.08);
             text-align: center;
         }
         .date-day {
@@ -155,17 +187,21 @@
             font-size: 20px;
             font-weight: bold;
         }
-        /* =========================================================
-           WEEKLY MINI CALENDAR
-        ========================================================= */
+        /* =====================================================
+           WEEK
+        ===================================================== */
         .week-card {
             margin-top: 28px;
             padding: 18px;
             border-radius: 25px;
-            background: rgba(255,255,255,0.72);
-            border: 1px solid rgba(255,255,255,0.9);
+            background:
+                rgba(255,255,255,0.72);
+            border:
+                1px solid
+                rgba(255,255,255,0.9);
             box-shadow:
-                0 12px 35px rgba(171, 77, 117, 0.09);
+                0 12px 35px
+                rgba(171,77,117,0.09);
         }
         .section-title {
             margin: 0 0 15px;
@@ -185,8 +221,10 @@
             min-width: 0;
             padding: 10px 4px;
             border-radius: 17px;
-            background: rgba(255, 245, 249, 0.9);
-            border: 1px solid #f8d7e5;
+            background:
+                rgba(255,245,249,0.9);
+            border:
+                1px solid #f8d7e5;
             text-align: center;
             transition:
                 transform 0.25s ease,
@@ -194,23 +232,53 @@
                 box-shadow 0.25s ease;
         }
         .day-box:hover {
-            transform: translateY(-3px);
+            transform:
+                translateY(-3px);
         }
         .day-box.today {
-            border: 2px solid #e889ad;
+            border:
+                2px solid #e889ad;
             box-shadow:
-                0 5px 18px rgba(215, 100, 143, 0.15);
+                0 5px 18px
+                rgba(215,100,143,0.15);
         }
-        .day-box.completed {
+        /*
+           SUBMITTED DAY
+           This is now different from 100%.
+           A submitted day gets the pink background
+           even if only one task, or zero tasks,
+           were completed.
+        */
+        .day-box.submitted {
             background:
                 linear-gradient(
                     135deg,
-                    #ffd2e4,
-                    #f7b8d2
+                    #ffd9e8,
+                    #f8c0d7
                 );
-            border-color: #ef9cbd;
+            border-color:
+                #ed9bbb;
             box-shadow:
-                0 5px 15px rgba(218, 102, 148, 0.18);
+                0 5px 15px
+                rgba(218,102,148,0.18);
+        }
+        /*
+           100% COMPLETION
+           This gives an extra visual distinction
+           when every main task was completed.
+        */
+        .day-box.perfect {
+            background:
+                linear-gradient(
+                    135deg,
+                    #ffc8df,
+                    #f3a9ca
+                );
+            border-color:
+                #e587ad;
+            box-shadow:
+                0 7px 20px
+                rgba(218,91,141,0.25);
         }
         .day-name {
             display: block;
@@ -225,15 +293,26 @@
             font-weight: bold;
             color: #7d465f;
         }
+        /*
+           Symbols underneath the day number.
+           Example:
+           ♡
+           ♡☕︎
+           ♡◇
+           ♡☕︎◇
+        */
         .day-status {
             display: block;
-            min-height: 16px;
+            min-height: 18px;
             margin-top: 4px;
-            font-size: 11px;
+            color: #c25280;
+            font-size: 12px;
+            letter-spacing: 1px;
+            white-space: nowrap;
         }
-        /* =========================================================
-           SCORE CARD
-        ========================================================= */
+        /* =====================================================
+           SCORE
+        ===================================================== */
         .score-card {
             margin-top: 25px;
             padding: 25px;
@@ -244,9 +323,12 @@
                     rgba(255,255,255,0.9),
                     rgba(255,240,247,0.9)
                 );
-            border: 1px solid rgba(255,255,255,0.95);
+            border:
+                1px solid
+                rgba(255,255,255,0.95);
             box-shadow:
-                0 15px 40px rgba(171, 77, 117, 0.1);
+                0 15px 40px
+                rgba(171,77,117,0.1);
             text-align: center;
         }
         .score-label {
@@ -285,19 +367,24 @@
                     #f59fc0,
                     #db6796
                 );
-            transition: width 0.5s ease;
+            transition:
+                width 0.5s ease;
         }
-        /* =========================================================
+        /* =====================================================
            TASK CARD
-        ========================================================= */
+        ===================================================== */
         .tasks-card {
             margin-top: 25px;
             padding: 25px;
             border-radius: 28px;
-            background: rgba(255,255,255,0.78);
-            border: 1px solid rgba(255,255,255,0.9);
+            background:
+                rgba(255,255,255,0.78);
+            border:
+                1px solid
+                rgba(255,255,255,0.9);
             box-shadow:
-                0 15px 40px rgba(171, 77, 117, 0.09);
+                0 15px 40px
+                rgba(171,77,117,0.09);
         }
         .tasks-heading {
             text-align: center;
@@ -325,7 +412,8 @@
             padding: 15px 17px;
             border-radius: 20px;
             background: #fff8fb;
-            border: 1px solid #f7dce8;
+            border:
+                1px solid #f7dce8;
             cursor: pointer;
             transition:
                 transform 0.2s ease,
@@ -333,7 +421,8 @@
                 border-color 0.2s ease;
         }
         .task:hover {
-            transform: translateX(3px);
+            transform:
+                translateX(3px);
             background: #fff1f7;
         }
         .task.checked {
@@ -343,9 +432,11 @@
         .checkbox {
             width: 27px;
             height: 27px;
-            flex: 0 0 27px;
+            flex:
+                0 0 27px;
             border-radius: 9px;
-            border: 2px solid #e5a0bc;
+            border:
+                2px solid #e5a0bc;
             background: white;
             display: flex;
             align-items: center;
@@ -360,7 +451,8 @@
         .task.checked .checkbox {
             background: #df6e9a;
             border-color: #df6e9a;
-            transform: scale(1.05);
+            transform:
+                scale(1.05);
         }
         .task-name {
             flex: 1;
@@ -369,7 +461,8 @@
             font-weight: bold;
         }
         .task.checked .task-name {
-            text-decoration: line-through;
+            text-decoration:
+                line-through;
             color: #ae718d;
         }
         .task-points {
@@ -378,9 +471,9 @@
             font-weight: bold;
             white-space: nowrap;
         }
-        /* =========================================================
-           BUTTON
-        ========================================================= */
+        /* =====================================================
+           DONE BUTTON
+        ===================================================== */
         .done-button {
             width: 100%;
             margin-top: 22px;
@@ -400,22 +493,163 @@
             letter-spacing: 0.5px;
             cursor: pointer;
             box-shadow:
-                0 8px 20px rgba(211, 89, 135, 0.2);
+                0 8px 20px
+                rgba(211,89,135,0.2);
             transition:
                 transform 0.2s ease,
                 box-shadow 0.2s ease;
         }
         .done-button:hover {
-            transform: translateY(-2px);
+            transform:
+                translateY(-2px);
             box-shadow:
-                0 11px 25px rgba(211, 89, 135, 0.28);
+                0 11px 25px
+                rgba(211,89,135,0.28);
         }
         .done-button:active {
-            transform: scale(0.98);
+            transform:
+                scale(0.98);
         }
-        /* =========================================================
+        /* =====================================================
+           SUBMITTED MESSAGE
+        ===================================================== */
+        .submitted-message {
+            display: none;
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 20px;
+            background: #ffe0ec;
+            border:
+                1px solid #f2aec8;
+            color: #a64370;
+            text-align: center;
+            font-weight: bold;
+            animation:
+                popIn 0.4s ease;
+        }
+        .submitted-message.show {
+            display: block;
+        }
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform:
+                    scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform:
+                    scale(1);
+            }
+        }
+        /* =====================================================
+           OPTIONAL EXTRAS
+        ===================================================== */
+        .extras-card {
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 28px;
+            background:
+                rgba(255,255,255,0.78);
+            border:
+                1px solid
+                rgba(255,255,255,0.9);
+            box-shadow:
+                0 15px 40px
+                rgba(171,77,117,0.09);
+        }
+        .extras-heading {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .extras-heading h2 {
+            margin: 0;
+            color: #a94772;
+            font-size: 21px;
+        }
+        .extras-heading p {
+            margin: 7px 0 0;
+            color: #a56b83;
+            font-size: 13px;
+        }
+        .extras-list {
+            display: grid;
+            grid-template-columns:
+                repeat(2, 1fr);
+            gap: 12px;
+        }
+        .extra {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            border-radius: 20px;
+            background: #fff8fb;
+            border:
+                1px solid #f7dce8;
+            cursor: pointer;
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+        .extra:hover {
+            transform:
+                translateY(-2px);
+            background: #fff1f7;
+        }
+        .extra.selected {
+            background: #ffe6f0;
+            border-color: #e8a0bd;
+            box-shadow:
+                0 5px 15px
+                rgba(218,102,148,0.12);
+        }
+        .extra-symbol {
+            width: 38px;
+            height: 38px;
+            flex:
+                0 0 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            background: #fff;
+            border:
+                1px solid #f2d4e1;
+            color: #c65c87;
+            font-size: 21px;
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease;
+        }
+        .extra.selected .extra-symbol {
+            background: #f5b2cc;
+            color: white;
+            transform:
+                rotate(-5deg)
+                scale(1.05);
+        }
+        .extra-info {
+            flex: 1;
+        }
+        .extra-name {
+            color: #75445c;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .extra-status {
+            margin-top: 3px;
+            color: #b47790;
+            font-size: 11px;
+        }
+        .extra.selected .extra-status {
+            color: #c35b84;
+        }
+        /* =====================================================
            STATS
-        ========================================================= */
+        ===================================================== */
         .stats {
             display: grid;
             grid-template-columns:
@@ -426,11 +660,15 @@
         .stat {
             padding: 20px;
             border-radius: 23px;
-            background: rgba(255,255,255,0.72);
-            border: 1px solid rgba(255,255,255,0.9);
+            background:
+                rgba(255,255,255,0.72);
+            border:
+                1px solid
+                rgba(255,255,255,0.9);
             text-align: center;
             box-shadow:
-                0 8px 25px rgba(171, 77, 117, 0.07);
+                0 8px 25px
+                rgba(171,77,117,0.07);
         }
         .stat-icon {
             font-size: 24px;
@@ -448,31 +686,29 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        /* =========================================================
+        /* =====================================================
            MESSAGE
-        ========================================================= */
+        ===================================================== */
         .message {
             margin-top: 25px;
             padding: 20px;
             border-radius: 23px;
-            background: rgba(255,255,255,0.65);
+            background:
+                rgba(255,255,255,0.65);
             text-align: center;
             color: #965873;
             font-size: 14px;
             line-height: 1.5;
         }
-        /* =========================================================
-           FOOTER
-        ========================================================= */
         footer {
             margin-top: 30px;
             text-align: center;
             color: #b2778f;
             font-size: 11px;
         }
-        /* =========================================================
-           SPARKLE ANIMATION
-        ========================================================= */
+        /* =====================================================
+           SPARKLES
+        ===================================================== */
         .sparkle {
             position: fixed;
             z-index: 999;
@@ -485,7 +721,7 @@
             0% {
                 opacity: 0;
                 transform:
-                    translate(0, 0)
+                    translate(0,0)
                     scale(0.3)
                     rotate(0deg);
             }
@@ -495,45 +731,24 @@
             100% {
                 opacity: 0;
                 transform:
-                    translate(var(--x), var(--y))
+                    translate(
+                        var(--x),
+                        var(--y)
+                    )
                     scale(1.3)
                     rotate(180deg);
             }
         }
-        /* =========================================================
-           COMPLETION MESSAGE
-        ========================================================= */
-        .completion-message {
-            display: none;
-            margin-top: 20px;
-            padding: 18px;
-            border-radius: 20px;
-            background: #ffe0ec;
-            border: 1px solid #f2aec8;
-            color: #a64370;
-            text-align: center;
-            font-weight: bold;
-            animation: popIn 0.4s ease;
-        }
-        .completion-message.show {
-            display: block;
-        }
-        @keyframes popIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        /* =========================================================
+        /* =====================================================
            MOBILE
-        ========================================================= */
+        ===================================================== */
         @media (max-width: 600px) {
             .page {
-                width: min(100% - 18px, 900px);
+                width:
+                    min(
+                        100% - 18px,
+                        900px
+                    );
                 padding-top: 25px;
             }
             h1 {
@@ -543,13 +758,19 @@
                 gap: 4px;
             }
             .day-box {
-                padding: 8px 2px;
+                padding:
+                    8px 2px;
             }
             .day-number {
                 font-size: 14px;
             }
+            .day-status {
+                font-size: 10px;
+                letter-spacing: 0;
+            }
             .tasks-card,
-            .score-card {
+            .score-card,
+            .extras-card {
                 padding: 19px;
             }
             .task {
@@ -558,27 +779,34 @@
             .task-name {
                 font-size: 14px;
             }
-            .stats {
-                grid-template-columns: 1fr 1fr;
+            .extras-list {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
     <!-- =========================================================
-         BACKGROUND DECORATION
+         BACKGROUND
     ========================================================== -->
     <div class="background-decoration">
-        <div class="floating-heart heart1">♡</div>
-        <div class="floating-heart heart2">✦</div>
-        <div class="floating-heart heart3">♡</div>
-        <div class="floating-heart heart4">✧</div>
+        <div class="floating-heart heart1">
+            ♡
+        </div>
+        <div class="floating-heart heart2">
+            ✦
+        </div>
+        <div class="floating-heart heart3">
+            ♡
+        </div>
+        <div class="floating-heart heart4">
+            ✧
+        </div>
     </div>
-    <!-- =========================================================
-         MAIN PAGE
-    ========================================================== -->
     <main class="page">
-        <!-- HEADER -->
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
         <header class="header">
             <span class="tiny-label">
                 ♡ NIGHTLY CHECK-IN ♡
@@ -605,7 +833,7 @@
             </div>
         </header>
         <!-- =====================================================
-             WEEKLY CALENDAR
+             WEEK
         ====================================================== -->
         <section class="week-card">
             <h2 class="section-title">
@@ -614,9 +842,7 @@
             <div
                 class="week"
                 id="week"
-            >
-                <!-- JavaScript creates the days -->
-            </div>
+            ></div>
         </section>
         <!-- =====================================================
              SCORE
@@ -626,8 +852,15 @@
                 Tonight's Points
             </div>
             <div class="score">
-                <span id="currentPoints">0</span>
-                <span>/ <span id="possiblePoints">45</span></span>
+                <span id="currentPoints">
+                    0
+                </span>
+                <span>
+                    /
+                    <span id="possiblePoints">
+                        45
+                    </span>
+                </span>
             </div>
             <div class="progress-track">
                 <div
@@ -637,38 +870,61 @@
             </div>
         </section>
         <!-- =====================================================
-             TASKS
+             MAIN GOALS
         ====================================================== -->
         <section class="tasks-card">
             <div class="tasks-heading">
                 <h2>
-                    ✿ Tonight's Goals
+                    ✿ Tonight's Little Goals
                 </h2>
                 <p>
-                    Check off everything you managed to do today.
+                    Check off whatever you managed to do today.
                 </p>
             </div>
             <div
                 class="task-list"
                 id="taskList"
-            >
-                <!-- JavaScript creates tasks -->
-            </div>
+            ></div>
+            <!--
+                IMPORTANT:
+                This button ALWAYS works.
+                You do NOT need to complete every task.
+            -->
             <button
                 class="done-button"
                 onclick="finishNight()"
             >
-                ✿ I'm Done for Tonight ✿
+                ♡ I'm Done for Tonight ♡
             </button>
             <div
-                class="completion-message"
-                id="completionMessage"
+                class="submitted-message"
+                id="submittedMessage"
             >
-                ✨ You completed everything tonight! ✨
+                ♡ Tonight has been saved! ♡
                 <br>
-                That's <span id="completionPoints">0</span>
-                points! ♡
+                You got
+                <span id="completionPoints">
+                    0
+                </span>
+                points tonight.
             </div>
+        </section>
+        <!-- =====================================================
+             OPTIONAL EXTRAS
+        ====================================================== -->
+        <section class="extras-card">
+            <div class="extras-heading">
+                <h2>
+                    ♡ Extras ♡
+                </h2>
+                <p>
+                    Optional little things from tonight.
+                </p>
+            </div>
+            <div
+                class="extras-list"
+                id="extrasList"
+            ></div>
         </section>
         <!-- =====================================================
              STATS
@@ -676,7 +932,7 @@
         <section class="stats">
             <div class="stat">
                 <div class="stat-icon">
-                    ⭐
+                    ✦
                 </div>
                 <div
                     class="stat-number"
@@ -690,7 +946,7 @@
             </div>
             <div class="stat">
                 <div class="stat-icon">
-                    🔥
+                    ♡
                 </div>
                 <div
                     class="stat-number"
@@ -699,11 +955,13 @@
                     0
                 </div>
                 <div class="stat-label">
-                    Day Streak
+                    Nightly Check-ins
                 </div>
             </div>
         </section>
-        <!-- MESSAGE -->
+        <!-- =====================================================
+             MESSAGE
+        ====================================================== -->
         <div class="message">
             ♡ You don't have to be perfect.
             Every little thing you do for yourself counts. ♡
@@ -714,104 +972,179 @@
     </main>
     <script>
         /* =========================================================
-           ✿ EASY-TO-EDIT TASK LIST ✿
-           THIS IS THE MAIN SECTION YOU WILL EDIT.
-           To add another task, copy one line and change:
-           id     = unique name
-           name   = what appears on the website
-           points = how many points it gives
-           Example:
+           ✿ MAIN TASKS — EDIT THESE ✿
+           These are your regular nightly goals.
+           They affect your points and percentage.
+           TO ADD A TASK:
+           Copy one of these:
            {
                id: "journaling",
                name: "Write in my journal",
                points: 15
            }
+           Make sure every task has a DIFFERENT id.
         ========================================================= */
         const tasks = [
-
-    {
-        id: "brush",
-        name: "Brush my teeth",
-        points: 10
-    },
-
-    {
-        id: "yoga",
-        name: "Do yoga",
-        points: 20
-    },
-
-    {
-        id: "subliminals",
-        name: "Listen to my subliminals",
-        points: 15
-    },
-
-    {
-        id: "skincare",
-        name: "Do my skincare",
-        points: 10
-    }
-
-];
+            {
+                id: "brush",
+                name: "Brush my teeth",
+                points: 10
+            },
+            {
+                id: "yoga",
+                name: "Do yoga",
+                points: 20
+            },
+            {
+                id: "subliminals",
+                name: "Listen to my subliminals",
+                points: 15
+            },
+          {
+                id: "skincare",
+                name: "Do Skincare",
+                points: 10
+            }
+        ];
         /* =========================================================
-           DATE FUNCTIONS
+           ✿ OPTIONAL EXTRAS — EDIT THESE ✿
+           These NEVER affect:
+           • Points
+           • Percentage
+           • Completion
+           • 100% status
+           They are simply recorded separately.
+           TO ADD ANOTHER:
+           {
+               id: "reading",
+               name: "Read",
+               symbol: "◇"
+           }
         ========================================================= */
-        function getDateKey(date = new Date()) {
-            const year = date.getFullYear();
+        const extras = [
+            {
+                id: "tea",
+                name: "Had some tea",
+                symbol: "☕︎"
+            },
+            {
+                id: "gummy",
+                name: "Nighttime gummy",
+                symbol: "◇"
+            }
+        ];
+        /* =========================================================
+           DATE
+        ========================================================= */
+        function getDateKey(
+            date = new Date()
+        ) {
+            const year =
+                date.getFullYear();
             const month =
-                String(date.getMonth() + 1)
-                    .padStart(2, "0");
+                String(
+                    date.getMonth() + 1
+                ).padStart(
+                    2,
+                    "0"
+                );
             const day =
-                String(date.getDate())
-                    .padStart(2, "0");
-            return `${year}-${month}-${day}`;
-        }
-        function getDateFromKey(key) {
-            const parts = key.split("-");
-            return new Date(
-                Number(parts[0]),
-                Number(parts[1]) - 1,
-                Number(parts[2])
+                String(
+                    date.getDate()
+                ).padStart(
+                    2,
+                    "0"
+                );
+            return (
+                `${year}-${month}-${day}`
             );
         }
-        const todayKey = getDateKey();
+        function getStartOfWeek(date) {
+            const result =
+                new Date(date);
+            const day =
+                result.getDay();
+            result.setDate(
+                result.getDate() - day
+            );
+            result.setHours(
+                0,
+                0,
+                0,
+                0
+            );
+            return result;
+        }
+        const todayKey =
+            getDateKey();
         /* =========================================================
-           STORAGE
+           LOCAL STORAGE
         ========================================================= */
         function getStorage() {
             const saved =
-                localStorage.getItem("nightlyTracker");
+                localStorage.getItem(
+                    "nightlyTracker"
+                );
             if (!saved) {
                 return {
                     days: {}
                 };
             }
             try {
-                return JSON.parse(saved);
+                return JSON.parse(
+                    saved
+                );
             } catch {
                 return {
                     days: {}
                 };
             }
         }
-        let tracker = getStorage();
+        let tracker =
+            getStorage();
         function saveStorage() {
             localStorage.setItem(
                 "nightlyTracker",
-                JSON.stringify(tracker)
+                JSON.stringify(
+                    tracker
+                )
             );
         }
         /* =========================================================
-           GET TODAY'S DATA
+           TODAY'S DATA
         ========================================================= */
         function getTodayData() {
-            if (!tracker.days[todayKey]) {
+            if (
+                !tracker.days[todayKey]
+            ) {
                 tracker.days[todayKey] = {
                     completedTasks: [],
+                    extras: [],
+                    /*
+                       This is now simply:
+                       "Did I submit tonight?"
+                    */
                     finished: false,
                     points: 0
                 };
+            }
+            if (
+                !Array.isArray(
+                    tracker.days[todayKey]
+                        .extras
+                )
+            ) {
+                tracker.days[todayKey]
+                    .extras = [];
+            }
+            if (
+                !Array.isArray(
+                    tracker.days[todayKey]
+                        .completedTasks
+                )
+            ) {
+                tracker.days[todayKey]
+                    .completedTasks = [];
             }
             return tracker.days[todayKey];
         }
@@ -819,7 +1152,8 @@
            DATE DISPLAY
         ========================================================= */
         function displayDate() {
-            const now = new Date();
+            const now =
+                new Date();
             const dayName =
                 now.toLocaleDateString(
                     "en-US",
@@ -838,35 +1172,53 @@
                 );
             document.getElementById(
                 "dateDay"
-            ).textContent = dayName;
+            ).textContent =
+                dayName;
             document.getElementById(
                 "dateNumber"
-            ).textContent = fullDate;
+            ).textContent =
+                fullDate;
         }
         /* =========================================================
-           CREATE TASKS
+           TASKS
         ========================================================= */
         function renderTasks() {
             const container =
-                document.getElementById("taskList");
+                document.getElementById(
+                    "taskList"
+                );
             const today =
                 getTodayData();
             container.innerHTML = "";
             tasks.forEach(task => {
                 const isChecked =
-                    today.completedTasks.includes(
-                        task.id
-                    );
+                    today.completedTasks
+                        .includes(
+                            task.id
+                        );
                 const taskElement =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
                 taskElement.className =
                     "task" +
-                    (isChecked ? " checked" : "");
+                    (
+                        isChecked
+                            ? " checked"
+                            : ""
+                    );
                 taskElement.onclick =
-                    () => toggleTask(task.id);
+                    () =>
+                        toggleTask(
+                            task.id
+                        );
                 taskElement.innerHTML = `
                     <div class="checkbox">
-                        ${isChecked ? "✓" : ""}
+                        ${
+                            isChecked
+                                ? "✓"
+                                : ""
+                        }
                     </div>
                     <div class="task-name">
                         ${task.name}
@@ -885,14 +1237,59 @@
                 getPossiblePoints();
         }
         /* =========================================================
-           CALCULATE POSSIBLE POINTS
+           EXTRAS
         ========================================================= */
-        function getPossiblePoints() {
-            return tasks.reduce(
-                (total, task) =>
-                    total + task.points,
-                0
-            );
+        function renderExtras() {
+            const container =
+                document.getElementById(
+                    "extrasList"
+                );
+            const today =
+                getTodayData();
+            container.innerHTML = "";
+            extras.forEach(extra => {
+                const selected =
+                    today.extras
+                        .includes(
+                            extra.id
+                        );
+                const extraElement =
+                    document.createElement(
+                        "div"
+                    );
+                extraElement.className =
+                    "extra" +
+                    (
+                        selected
+                            ? " selected"
+                            : ""
+                    );
+                extraElement.onclick =
+                    () =>
+                        toggleExtra(
+                            extra.id
+                        );
+                extraElement.innerHTML = `
+                    <div class="extra-symbol">
+                        ${extra.symbol}
+                    </div>
+                    <div class="extra-info">
+                        <div class="extra-name">
+                            ${extra.name}
+                        </div>
+                        <div class="extra-status">
+                            ${
+                                selected
+                                    ? "Recorded tonight ♡"
+                                    : "Not recorded"
+                            }
+                        </div>
+                    </div>
+                `;
+                container.appendChild(
+                    extraElement
+                );
+            });
         }
         /* =========================================================
            TOGGLE TASK
@@ -901,68 +1298,137 @@
             const today =
                 getTodayData();
             const index =
-                today.completedTasks.indexOf(
-                    taskId
-                );
-            if (index === -1) {
-                today.completedTasks.push(
-                    taskId
-                );
+                today.completedTasks
+                    .indexOf(
+                        taskId
+                    );
+            if (
+                index === -1
+            ) {
+                today.completedTasks
+                    .push(
+                        taskId
+                    );
             } else {
-                today.completedTasks.splice(
+                today.completedTasks
+                    .splice(
+                        index,
+                        1
+                    );
+            }
+            /*
+               IMPORTANT:
+               Changing a task does NOT
+               automatically submit the night.
+               You still press the button.
+            */
+            saveStorage();
+            renderTasks();
+            updateScore();
+        }
+        /* =========================================================
+           TOGGLE EXTRA
+        ========================================================= */
+        function toggleExtra(extraId) {
+            const today =
+                getTodayData();
+            const index =
+                today.extras
+                    .indexOf(
+                        extraId
+                    );
+            if (
+                index === -1
+            ) {
+                today.extras.push(
+                    extraId
+                );
+                createSmallSparkle();
+            } else {
+                today.extras.splice(
                     index,
                     1
                 );
             }
-            today.finished = false;
+            /*
+               Extras do NOT change
+               completion or points.
+            */
             saveStorage();
-            renderTasks();
-            updateScore();
-            createSmallSparkle();
+            renderExtras();
+            updateWeek();
         }
         /* =========================================================
-           UPDATE SCORE
+           POSSIBLE POINTS
+        ========================================================= */
+        function getPossiblePoints() {
+            return tasks.reduce(
+                (
+                    total,
+                    task
+                ) => {
+                    return (
+                        total +
+                        task.points
+                    );
+                },
+                0
+            );
+        }
+        /* =========================================================
+           SCORE
         ========================================================= */
         function updateScore() {
             const today =
                 getTodayData();
             let points = 0;
-            today.completedTasks.forEach(
-                taskId => {
-                    const task =
-                        tasks.find(
-                            item =>
-                                item.id === taskId
-                        );
-                    if (task) {
-                        points += task.points;
+            today.completedTasks
+                .forEach(
+                    taskId => {
+                        const task =
+                            tasks.find(
+                                item =>
+                                    item.id ===
+                                    taskId
+                            );
+                        if (task) {
+                            points +=
+                                task.points;
+                        }
                     }
-                }
-            );
-            today.points = points;
+                );
+            today.points =
+                points;
             document.getElementById(
                 "currentPoints"
-            ).textContent = points;
+            ).textContent =
+                points;
             const possible =
                 getPossiblePoints();
             const percentage =
                 possible === 0
                     ? 0
-                    : (points / possible) * 100;
+                    : (
+                        points /
+                        possible
+                    ) * 100;
             document.getElementById(
                 "progressBar"
             ).style.width =
                 percentage + "%";
-            const completion =
+            const message =
                 document.getElementById(
-                    "completionMessage"
+                    "submittedMessage"
                 );
+            /*
+               Show the submitted message
+               if the user has pressed
+               "I'm Done for Tonight."
+            */
             if (
-                today.completedTasks.length ===
-                tasks.length &&
-                tasks.length > 0
+                today.finished
             ) {
-                completion.classList.add(
+                message.classList.add(
                     "show"
                 );
                 document.getElementById(
@@ -970,7 +1436,7 @@
                 ).textContent =
                     points;
             } else {
-                completion.classList.remove(
+                message.classList.remove(
                     "show"
                 );
             }
@@ -983,41 +1449,27 @@
         function finishNight() {
             const today =
                 getTodayData();
-            const allDone =
-                tasks.length > 0 &&
-                today.completedTasks.length ===
-                tasks.length;
-            if (allDone) {
-                today.finished = true;
-                saveStorage();
-                updateWeek();
-                createBigSparkles();
-                updateStats();
-            } else {
-                const remaining =
-                    tasks.length -
-                    today.completedTasks.length;
-                alert(
-                    `You still have ${remaining} little goal${remaining === 1 ? "" : "s"} left! ♡`
-                );
-            }
+            /*
+               THIS IS THE IMPORTANT FIX.
+               There is NO check here asking
+               whether all tasks are complete.
+               The user can submit:
+               0%
+               25%
+               50%
+               75%
+               100%
+               Whatever they managed is saved.
+            */
+            today.finished = true;
+            saveStorage();
+            updateScore();
+            updateWeek();
+            createBigSparkles();
         }
         /* =========================================================
-           WEEK CALENDAR
+           WEEKLY CALENDAR
         ========================================================= */
-        function getStartOfWeek(date) {
-            const result =
-                new Date(date);
-            const day =
-                result.getDay();
-            result.setDate(
-                result.getDate() - day
-            );
-            result.setHours(
-                0, 0, 0, 0
-            );
-            return result;
-        }
         function updateWeek() {
             const container =
                 document.getElementById(
@@ -1028,16 +1480,15 @@
                 getStartOfWeek(
                     new Date()
                 );
-            const dayNames =
-                [
-                    "Sun",
-                    "Mon",
-                    "Tue",
-                    "Wed",
-                    "Thu",
-                    "Fri",
-                    "Sat"
-                ];
+            const dayNames = [
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat"
+            ];
             for (
                 let i = 0;
                 i < 7;
@@ -1049,26 +1500,89 @@
                     start.getDate() + i
                 );
                 const key =
-                    getDateKey(date);
+                    getDateKey(
+                        date
+                    );
                 const data =
                     tracker.days[key];
                 const isToday =
                     key === todayKey;
-                const isCompleted =
+                const isSubmitted =
                     data &&
                     data.finished;
+                const totalPossible =
+                    getPossiblePoints();
+                const points =
+                    data
+                        ? Number(
+                            data.points
+                        ) || 0
+                        : 0;
+                const isPerfect =
+                    isSubmitted &&
+                    totalPossible > 0 &&
+                    points >= totalPossible;
                 const box =
                     document.createElement(
                         "div"
                     );
+                /*
+                   submitted = pink
+                   perfect = extra-pink
+                   today = highlighted border
+                */
                 box.className =
                     "day-box" +
-                    (isToday
-                        ? " today"
-                        : "") +
-                    (isCompleted
-                        ? " completed"
-                        : "");
+                    (
+                        isToday
+                            ? " today"
+                            : ""
+                    ) +
+                    (
+                        isSubmitted
+                            ? " submitted"
+                            : ""
+                    ) +
+                    (
+                        isPerfect
+                            ? " perfect"
+                            : ""
+                    );
+                /*
+                   Build the symbols.
+                   First comes the submission heart.
+                   Then every optional extra
+                   selected for that date.
+                */
+                let symbols = "";
+                if (
+                    isSubmitted
+                ) {
+                    symbols += "♡";
+                }
+                if (
+                    data &&
+                    Array.isArray(
+                        data.extras
+                    )
+                ) {
+                    data.extras.forEach(
+                        extraId => {
+                            const extra =
+                                extras.find(
+                                    item =>
+                                        item.id ===
+                                        extraId
+                                );
+                            if (
+                                extra
+                            ) {
+                                symbols +=
+                                    extra.symbol;
+                            }
+                        }
+                    );
+                }
                 box.innerHTML = `
                     <span class="day-name">
                         ${dayNames[i]}
@@ -1077,13 +1591,7 @@
                         ${date.getDate()}
                     </span>
                     <span class="day-status">
-                        ${
-                            isCompleted
-                                ? "♡"
-                                : isToday
-                                    ? "•"
-                                    : ""
-                        }
+                        ${symbols}
                     </span>
                 `;
                 container.appendChild(
@@ -1098,30 +1606,37 @@
             let total = 0;
             Object.values(
                 tracker.days
-            ).forEach(day => {
-                total +=
-                    Number(day.points) || 0;
-            });
+            ).forEach(
+                day => {
+                    total +=
+                        Number(
+                            day.points
+                        ) || 0;
+                }
+            );
             return total;
         }
         /* =========================================================
-           STREAK
+           CHECK-IN COUNT
+           This counts nights that were
+           actually submitted.
+           It does NOT require 100%.
         ========================================================= */
         function calculateStreak() {
             let streak = 0;
             const date =
                 new Date();
-            /*
-             Start with today.
-             If today isn't finished yet,
-             we look at yesterday so your
-             current streak isn't immediately
-             lost during the day.
-            */
             const today =
                 tracker.days[
-                    getDateKey(date)
+                    getDateKey(
+                        date
+                    )
                 ];
+            /*
+               If tonight hasn't been
+               submitted yet, start checking
+               from yesterday.
+            */
             if (
                 !today ||
                 !today.finished
@@ -1132,7 +1647,9 @@
             }
             while (true) {
                 const key =
-                    getDateKey(date);
+                    getDateKey(
+                        date
+                    );
                 const data =
                     tracker.days[key];
                 if (
@@ -1147,6 +1664,20 @@
                     break;
                 }
             }
+            /*
+               If today IS submitted,
+               include today in the streak.
+            */
+            if (
+                today &&
+                today.finished
+            ) {
+                /*
+                   The loop above already
+                   started at today, so nothing
+                   extra is needed.
+                */
+            }
             return streak;
         }
         function updateStats() {
@@ -1160,15 +1691,14 @@
                 calculateStreak();
         }
         /* =========================================================
-           SPARKLES
+           SMALL SPARKLE
         ========================================================= */
         function createSmallSparkle() {
-            const symbols =
-                [
-                    "✦",
-                    "✧",
-                    "♡"
-                ];
+            const symbols = [
+                "✦",
+                "✧",
+                "♡"
+            ];
             const sparkle =
                 document.createElement(
                     "div"
@@ -1190,41 +1720,63 @@
             sparkle.style.top =
                 (
                     40 +
-                    Math.random() * 30
+                    Math.random() *
+                    30
                 ) + "vh";
             sparkle.style.setProperty(
                 "--x",
                 (
-                    Math.random() * 120 - 60
+                    Math.random() *
+                    120 -
+                    60
                 ) + "px"
             );
             sparkle.style.setProperty(
                 "--y",
                 (
                     -80 -
-                    Math.random() * 100
+                    Math.random() *
+                    100
                 ) + "px"
             );
             document.body.appendChild(
                 sparkle
             );
             setTimeout(
-                () => sparkle.remove(),
+                () =>
+                    sparkle.remove(),
                 1500
             );
         }
+        /* =========================================================
+           BIG SPARKLES
+           These happen when you press
+           "I'm Done for Tonight."
+           If you completed 100%, you get
+           the full celebration.
+           If you didn't complete everything,
+           you still get a smaller celebration
+           because submitting still counts.
+        ========================================================= */
         function createBigSparkles() {
-            const symbols =
-                [
-                    "✦",
-                    "✧",
-                    "♡",
-                    "✨",
-                    "⋆"
-                ];
+            const today =
+                getTodayData();
+            const isPerfect =
+                today.completedTasks.length ===
+                tasks.length;
+            const amount =
+                isPerfect
+                    ? 35
+                    : 12;
+            const symbols = [
+                "✦",
+                "✧",
+                "♡",
+                "⋆"
+            ];
             for (
                 let i = 0;
-                i < 35;
+                i < amount;
                 i++
             ) {
                 setTimeout(
@@ -1289,13 +1841,14 @@
             }
         }
         /* =========================================================
-           INITIALIZE PAGE
+           INITIALIZE
         ========================================================= */
         function initialize() {
             displayDate();
             getTodayData();
             saveStorage();
             renderTasks();
+            renderExtras();
             updateScore();
             updateWeek();
             updateStats();
