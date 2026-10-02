@@ -545,12 +545,10 @@ function updateCollectionDisplay() {
 function getRandomItem() {
   const roll = Math.random();
 
-  const fourStars = items.filter(i => i.rarity === '4');
   const fiveStars = items.filter(i => i.rarity === '5');
   const secrets = items.filter(i => i.rarity === 'secret');
 
-  if (roll < 0.75) return fourStars[Math.floor(Math.random() * fourStars.length)];
-  if (roll < 0.95) return fiveStars[Math.floor(Math.random() * fiveStars.length)];
+  if (roll < 0.5) return fiveStars[Math.floor(Math.random() * fiveStars.length)];
   return secrets[Math.floor(Math.random() * secrets.length)];
 }
 
